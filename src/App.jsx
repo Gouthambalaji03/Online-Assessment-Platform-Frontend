@@ -7,6 +7,8 @@ import ProtectedRoute from './Components/ProtectedRoute';
 import Home from './Pages/Home';
 import Login from './Pages/Login';
 import Register from './Pages/Register';
+import ForgotPassword from './Pages/ForgotPassword';
+import ResetPassword from './Pages/ResetPassword';
 import Unauthorized from './Pages/Unauthorized';
 
 import StudentDashboard from './Pages/StudentDashboard';
@@ -35,6 +37,8 @@ const App = () => {
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password/:token" element={<ResetPassword />} />
           <Route path="/unauthorized" element={<Unauthorized />} />
 
           <Route path="/dashboard" element={

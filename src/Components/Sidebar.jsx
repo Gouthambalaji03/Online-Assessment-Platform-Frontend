@@ -31,8 +31,8 @@ const Sidebar = () => {
   const links = user?.role === 'admin' ? adminLinks : user?.role === 'proctor' ? proctorLinks : studentLinks;
 
   return (
-    <aside className="fixed left-0 top-16 bottom-0 w-64 glass-card border-0 border-r border-white/10 p-4 overflow-y-auto">
-      <nav className="space-y-2">
+    <aside className="fixed left-0 top-16 bottom-0 w-64 bg-white border-r border-[#E2E8F0] p-4 overflow-y-auto">
+      <nav className="space-y-1">
         {links.map((link) => (
           <NavLink
             key={link.to}
@@ -50,14 +50,13 @@ const Sidebar = () => {
         ))}
       </nav>
 
-      <div className="mt-8 p-4 bg-gradient-to-br from-orange-500/10 to-orange-600/5 rounded-lg border border-orange-500/20">
-        <p className="text-sm text-gray-400">Logged in as</p>
-        <p className="font-semibold text-white">{user?.firstName} {user?.lastName}</p>
-        <p className="text-xs text-orange-400 capitalize mt-1">{user?.role}</p>
+      <div className="mt-8 p-4 bg-gradient-to-br from-[#2563EB]/10 to-[#2563EB]/5 rounded-xl border border-[#2563EB]/20">
+        <p className="text-sm text-[#64748B]">Logged in as</p>
+        <p className="font-semibold text-[#1E293B]">{user?.firstName} {user?.lastName}</p>
+        <span className="badge badge-info mt-2 capitalize">{user?.role}</span>
       </div>
     </aside>
   );
 };
 
 export default Sidebar;
-

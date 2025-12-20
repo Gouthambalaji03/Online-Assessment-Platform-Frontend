@@ -62,29 +62,29 @@ const Profile = () => {
     <Layout>
       <div className="animate-fadeIn max-w-4xl">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold mb-2">Profile Settings</h1>
-          <p className="text-gray-400">Manage your account information and security</p>
+          <h1 className="text-[32px] font-bold text-[#1E293B] mb-2">Profile Settings</h1>
+          <p className="text-[#64748B]">Manage your account information and security</p>
         </div>
 
         <div className="glass-card overflow-hidden">
-          <div className="p-6 border-b border-white/10 bg-gradient-to-r from-orange-500/10 to-transparent">
+          <div className="p-6 border-b border-[#E2E8F0] bg-gradient-to-r from-[#2563EB]/10 to-transparent">
             <div className="flex items-center gap-4">
-              <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center text-3xl font-bold">
+              <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-[#2563EB] to-[#3B82F6] flex items-center justify-center text-3xl font-bold text-white">
                 {user?.firstName?.charAt(0)}{user?.lastName?.charAt(0)}
               </div>
               <div>
-                <h2 className="text-2xl font-bold">{user?.firstName} {user?.lastName}</h2>
-                <p className="text-gray-400">{user?.email}</p>
+                <h2 className="text-2xl font-bold text-[#1E293B]">{user?.firstName} {user?.lastName}</h2>
+                <p className="text-[#64748B]">{user?.email}</p>
                 <span className="badge badge-info mt-2 capitalize">{user?.role}</span>
               </div>
             </div>
           </div>
 
-          <div className="flex border-b border-white/10">
+          <div className="flex border-b border-[#E2E8F0]">
             <button
               onClick={() => setActiveTab('profile')}
               className={`px-6 py-4 font-medium transition-colors ${
-                activeTab === 'profile' ? 'text-orange-400 border-b-2 border-orange-400' : 'text-gray-400 hover:text-white'
+                activeTab === 'profile' ? 'text-[#2563EB] border-b-2 border-[#2563EB]' : 'text-[#64748B] hover:text-[#1E293B]'
               }`}
             >
               Profile
@@ -92,7 +92,7 @@ const Profile = () => {
             <button
               onClick={() => setActiveTab('security')}
               className={`px-6 py-4 font-medium transition-colors ${
-                activeTab === 'security' ? 'text-orange-400 border-b-2 border-orange-400' : 'text-gray-400 hover:text-white'
+                activeTab === 'security' ? 'text-[#2563EB] border-b-2 border-[#2563EB]' : 'text-[#64748B] hover:text-[#1E293B]'
               }`}
             >
               Security
@@ -104,7 +104,7 @@ const Profile = () => {
               <form onSubmit={handleProfileUpdate} className="space-y-6">
                 <div className="grid md:grid-cols-2 gap-6">
                   <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-2">First Name</label>
+                    <label className="block text-sm font-medium text-[#475569] mb-2">First Name</label>
                     <input
                       type="text"
                       className="input-field"
@@ -114,7 +114,7 @@ const Profile = () => {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-2">Last Name</label>
+                    <label className="block text-sm font-medium text-[#475569] mb-2">Last Name</label>
                     <input
                       type="text"
                       className="input-field"
@@ -126,18 +126,18 @@ const Profile = () => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">Email Address</label>
+                  <label className="block text-sm font-medium text-[#475569] mb-2">Email Address</label>
                   <input
                     type="email"
-                    className="input-field bg-slate-800/30"
+                    className="input-field bg-[#F1F5F9]"
                     value={user?.email}
                     disabled
                   />
-                  <p className="text-xs text-gray-500 mt-1">Email cannot be changed</p>
+                  <p className="text-xs text-[#94A3B8] mt-1">Email cannot be changed</p>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">Phone Number</label>
+                  <label className="block text-sm font-medium text-[#475569] mb-2">Phone Number</label>
                   <input
                     type="tel"
                     className="input-field"
@@ -172,7 +172,7 @@ const Profile = () => {
             {activeTab === 'security' && (
               <form onSubmit={handlePasswordChange} className="space-y-6">
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">Current Password</label>
+                  <label className="block text-sm font-medium text-[#475569] mb-2">Current Password</label>
                   <input
                     type="password"
                     className="input-field"
@@ -184,7 +184,7 @@ const Profile = () => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">New Password</label>
+                  <label className="block text-sm font-medium text-[#475569] mb-2">New Password</label>
                   <input
                     type="password"
                     className="input-field"
@@ -196,7 +196,7 @@ const Profile = () => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">Confirm New Password</label>
+                  <label className="block text-sm font-medium text-[#475569] mb-2">Confirm New Password</label>
                   <input
                     type="password"
                     className="input-field"
@@ -236,4 +236,3 @@ const Profile = () => {
 };
 
 export default Profile;
-

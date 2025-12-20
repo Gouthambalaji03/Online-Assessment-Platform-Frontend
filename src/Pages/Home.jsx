@@ -3,39 +3,42 @@ import Navbar from '../Components/Navbar';
 
 const Home = () => {
   return (
-    <div className="min-h-screen gradient-bg">
+    <div className="min-h-screen bg-[#F8FAFC]">
       <Navbar />
       
       <section className="relative pt-32 pb-20 px-4 overflow-hidden">
         <div className="absolute inset-0">
-          <div className="absolute top-20 left-1/4 w-[500px] h-[500px] bg-orange-500/20 rounded-full blur-[100px]"></div>
-          <div className="absolute bottom-20 right-1/4 w-[400px] h-[400px] bg-blue-500/15 rounded-full blur-[80px]"></div>
+          <div className="absolute top-20 left-1/4 w-[500px] h-[500px] bg-[#2563EB]/10 rounded-full blur-[100px]"></div>
+          <div className="absolute bottom-20 right-1/4 w-[400px] h-[400px] bg-[#10B981]/10 rounded-full blur-[80px]"></div>
         </div>
 
         <div className="max-w-6xl mx-auto relative">
           <div className="text-center animate-fadeIn">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-orange-500/10 border border-orange-500/20 mb-6">
-              <span className="w-2 h-2 rounded-full bg-orange-500 animate-pulse"></span>
-              <span className="text-orange-400 text-sm font-medium">Next-Gen Assessment Platform</span>
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#2563EB]/10 border border-[#2563EB]/20 mb-6">
+              <span className="w-2 h-2 rounded-full bg-[#2563EB] animate-pulse"></span>
+              <span className="text-[#2563EB] text-sm font-medium">Next-Gen Assessment Platform</span>
             </div>
 
-            <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
+            <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight text-[#1E293B]">
               Transform Your
-              <span className="block bg-gradient-to-r from-orange-400 via-orange-500 to-yellow-500 bg-clip-text text-transparent">
+              <span className="block bg-gradient-to-r from-[#2563EB] to-[#0EA5E9] bg-clip-text text-transparent">
                 Online Assessments
               </span>
             </h1>
 
-            <p className="text-xl text-gray-400 max-w-2xl mx-auto mb-10">
+            <p className="text-xl text-[#64748B] max-w-2xl mx-auto mb-10 leading-relaxed">
               A comprehensive platform for conducting secure online exams with advanced proctoring, 
               automated grading, and powerful analytics.
             </p>
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <Link to="/register" className="btn-primary text-lg px-8 py-4">
+              <Link to="/register" className="btn-primary text-base px-8 py-4">
                 Get Started Free
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                </svg>
               </Link>
-              <Link to="/login" className="btn-secondary text-lg px-8 py-4">
+              <Link to="/login" className="btn-secondary text-base px-8 py-4">
                 Sign In
               </Link>
             </div>
@@ -49,21 +52,19 @@ const Home = () => {
               { number: '4.9/5', label: 'Rating' }
             ].map((stat, i) => (
               <div key={i} className="text-center">
-                <p className="text-4xl font-bold bg-gradient-to-r from-orange-400 to-yellow-500 bg-clip-text text-transparent">
-                  {stat.number}
-                </p>
-                <p className="text-gray-400 mt-1">{stat.label}</p>
+                <p className="text-4xl font-bold text-[#2563EB]">{stat.number}</p>
+                <p className="text-[#64748B] mt-1 font-medium">{stat.label}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      <section className="py-20 px-4">
+      <section className="py-20 px-4 bg-white">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold mb-4">Powerful Features</h2>
-            <p className="text-gray-400 text-lg">Everything you need to conduct secure and efficient online assessments</p>
+            <h2 className="text-4xl font-bold mb-4 text-[#1E293B]">Powerful Features</h2>
+            <p className="text-[#64748B] text-lg">Everything you need to conduct secure and efficient online assessments</p>
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -71,55 +72,74 @@ const Home = () => {
               {
                 icon: 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2',
                 title: 'Question Banks',
-                desc: 'Create and manage comprehensive question banks with MCQs, true/false, and more.'
+                desc: 'Create and manage comprehensive question banks with MCQs, true/false, and more.',
+                color: '#2563EB'
               },
               {
                 icon: 'M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z',
                 title: 'Exam Scheduling',
-                desc: 'Schedule exams with flexible timing options and automatic notifications.'
+                desc: 'Schedule exams with flexible timing options and automatic notifications.',
+                color: '#10B981'
               },
               {
                 icon: 'M15 12a3 3 0 11-6 0 3 3 0 016 0z M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z',
                 title: 'AI Proctoring',
-                desc: 'Advanced proctoring with video monitoring, browser lockdown, and behavior analysis.'
+                desc: 'Advanced proctoring with video monitoring, browser lockdown, and behavior analysis.',
+                color: '#EF4444'
               },
               {
                 icon: 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z',
                 title: 'Auto Grading',
-                desc: 'Instant automated grading for objective questions with manual review options.'
+                desc: 'Instant automated grading for objective questions with manual review options.',
+                color: '#F59E0B'
               },
               {
                 icon: 'M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z',
                 title: 'Analytics',
-                desc: 'Detailed performance analytics with question-wise analysis and trends.'
+                desc: 'Detailed performance analytics with question-wise analysis and trends.',
+                color: '#0EA5E9'
               },
               {
                 icon: 'M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z',
                 title: 'Secure Platform',
-                desc: 'Enterprise-grade security with encrypted data and secure exam delivery.'
+                desc: 'Enterprise-grade security with encrypted data and secure exam delivery.',
+                color: '#8B5CF6'
               }
             ].map((feature, i) => (
-              <div key={i} className="stat-card group">
-                <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-orange-500/20 to-orange-600/10 flex items-center justify-center mb-4 group-hover:from-orange-500 group-hover:to-orange-600 transition-all duration-300">
-                  <svg className="w-6 h-6 text-orange-500 group-hover:text-white transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div key={i} className="stat-card group hover:border-[#2563EB]/30">
+                <div 
+                  className="w-12 h-12 rounded-xl flex items-center justify-center mb-4 transition-all duration-300"
+                  style={{ backgroundColor: `${feature.color}15` }}
+                >
+                  <svg 
+                    className="w-6 h-6 transition-colors" 
+                    style={{ color: feature.color }}
+                    fill="none" 
+                    stroke="currentColor" 
+                    viewBox="0 0 24 24"
+                  >
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={feature.icon} />
                   </svg>
                 </div>
-                <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
-                <p className="text-gray-400">{feature.desc}</p>
+                <h3 className="text-xl font-semibold mb-2 text-[#1E293B]">{feature.title}</h3>
+                <p className="text-[#64748B]">{feature.desc}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      <section className="py-20 px-4 border-t border-white/5">
-        <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-4xl font-bold mb-4">Ready to Get Started?</h2>
-          <p className="text-gray-400 text-lg mb-8">
+      <section className="py-20 px-4 bg-gradient-to-br from-[#2563EB] to-[#1D4ED8] relative overflow-hidden">
+        <div className="absolute inset-0">
+          <div className="absolute top-0 left-1/4 w-[300px] h-[300px] bg-white/10 rounded-full blur-[80px]"></div>
+          <div className="absolute bottom-0 right-1/4 w-[200px] h-[200px] bg-white/5 rounded-full blur-[60px]"></div>
+        </div>
+        <div className="max-w-4xl mx-auto text-center relative">
+          <h2 className="text-4xl font-bold mb-4 text-white">Ready to Get Started?</h2>
+          <p className="text-blue-100 text-lg mb-8 max-w-xl mx-auto">
             Join thousands of educators and students who trust AssessHub for their online assessments.
           </p>
-          <Link to="/register" className="btn-primary text-lg px-8 py-4 inline-flex items-center gap-2">
+          <Link to="/register" className="inline-flex items-center gap-2 bg-white text-[#2563EB] px-8 py-4 rounded-lg font-semibold hover:bg-blue-50 transition-all shadow-lg hover:shadow-xl">
             Start Free Trial
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
@@ -128,17 +148,17 @@ const Home = () => {
         </div>
       </section>
 
-      <footer className="border-t border-white/5 py-8 px-4">
+      <footer className="bg-white border-t border-[#E2E8F0] py-8 px-4">
         <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center">
-              <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="w-9 h-9 rounded-xl bg-[#2563EB] flex items-center justify-center">
+              <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
             </div>
-            <span className="font-semibold">AssessHub</span>
+            <span className="font-bold text-[#1E293B]">AssessHub</span>
           </div>
-          <p className="text-gray-500 text-sm">© 2024 AssessHub. All rights reserved.</p>
+          <p className="text-[#64748B] text-sm">© 2025 AssessHub. All rights reserved.</p>
         </div>
       </footer>
     </div>
@@ -146,4 +166,3 @@ const Home = () => {
 };
 
 export default Home;
-

@@ -37,7 +37,7 @@ const StudentDashboard = () => {
     return (
       <Layout>
         <div className="flex items-center justify-center h-[60vh]">
-          <div className="w-12 h-12 border-4 border-orange-500 border-t-transparent rounded-full animate-spin"></div>
+          <div className="w-12 h-12 border-4 border-[#2563EB] border-t-transparent rounded-full animate-spin"></div>
         </div>
       </Layout>
     );
@@ -47,83 +47,83 @@ const StudentDashboard = () => {
     <Layout>
       <div className="animate-fadeIn">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold mb-2">Welcome back, {user?.firstName}! 👋</h1>
-          <p className="text-gray-400">Here's your assessment overview</p>
+          <h1 className="text-[32px] font-bold text-[#1E293B] mb-2">Welcome back, {user?.firstName}!</h1>
+          <p className="text-[#64748B]">Here's your assessment overview</p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <div className="stat-card">
+          <div className="data-card">
             <div className="flex items-center justify-between mb-4">
-              <div className="w-12 h-12 rounded-lg bg-blue-500/20 flex items-center justify-center">
-                <svg className="w-6 h-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="w-12 h-12 rounded-xl bg-[#2563EB]/10 flex items-center justify-center">
+                <svg className="w-6 h-6 text-[#2563EB]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                 </svg>
               </div>
-              <span className="text-blue-400 text-sm">Total</span>
+              <span className="badge badge-info">Total</span>
             </div>
-            <p className="text-3xl font-bold">{stats?.totalExams || 0}</p>
-            <p className="text-gray-400 text-sm">Exams Taken</p>
+            <p className="value">{stats?.totalExams || 0}</p>
+            <p className="label">Exams Taken</p>
           </div>
 
-          <div className="stat-card">
+          <div className="data-card">
             <div className="flex items-center justify-between mb-4">
-              <div className="w-12 h-12 rounded-lg bg-green-500/20 flex items-center justify-center">
-                <svg className="w-6 h-6 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="w-12 h-12 rounded-xl bg-[#10B981]/10 flex items-center justify-center">
+                <svg className="w-6 h-6 text-[#10B981]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
               </div>
-              <span className="text-green-400 text-sm">Passed</span>
+              <span className="badge badge-success">Passed</span>
             </div>
-            <p className="text-3xl font-bold">{stats?.passedExams || 0}</p>
-            <p className="text-gray-400 text-sm">Exams Passed</p>
+            <p className="value">{stats?.passedExams || 0}</p>
+            <p className="label">Exams Passed</p>
           </div>
 
-          <div className="stat-card">
+          <div className="data-card">
             <div className="flex items-center justify-between mb-4">
-              <div className="w-12 h-12 rounded-lg bg-orange-500/20 flex items-center justify-center">
-                <svg className="w-6 h-6 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="w-12 h-12 rounded-xl bg-[#F59E0B]/10 flex items-center justify-center">
+                <svg className="w-6 h-6 text-[#F59E0B]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
                 </svg>
               </div>
-              <span className="text-orange-400 text-sm">Average</span>
+              <span className="badge badge-warning">Average</span>
             </div>
-            <p className="text-3xl font-bold">{stats?.avgPercentage || 0}%</p>
-            <p className="text-gray-400 text-sm">Average Score</p>
+            <p className="value">{stats?.avgPercentage || 0}%</p>
+            <p className="label">Average Score</p>
           </div>
 
-          <div className="stat-card">
+          <div className="data-card">
             <div className="flex items-center justify-between mb-4">
-              <div className="w-12 h-12 rounded-lg bg-purple-500/20 flex items-center justify-center">
-                <svg className="w-6 h-6 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="w-12 h-12 rounded-xl bg-[#8B5CF6]/10 flex items-center justify-center">
+                <svg className="w-6 h-6 text-[#8B5CF6]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
               </div>
-              <span className="text-purple-400 text-sm">Upcoming</span>
+              <span className="badge badge-neutral">Upcoming</span>
             </div>
-            <p className="text-3xl font-bold">{upcomingExams.length}</p>
-            <p className="text-gray-400 text-sm">Scheduled Exams</p>
+            <p className="value">{upcomingExams.length}</p>
+            <p className="label">Scheduled Exams</p>
           </div>
         </div>
 
         <div className="grid lg:grid-cols-2 gap-6">
           <div className="glass-card p-6">
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-semibold">Upcoming Exams</h2>
-              <Link to="/exams" className="text-orange-400 hover:text-orange-300 text-sm">View All</Link>
+              <h2 className="text-xl font-semibold text-[#1E293B]">Upcoming Exams</h2>
+              <Link to="/exams" className="link text-sm">View All</Link>
             </div>
             {upcomingExams.length > 0 ? (
               <div className="space-y-4">
                 {upcomingExams.slice(0, 4).map((exam) => (
-                  <div key={exam._id} className="flex items-center justify-between p-4 bg-slate-800/50 rounded-lg">
+                  <div key={exam._id} className="flex items-center justify-between p-4 bg-[#F1F5F9] rounded-xl">
                     <div>
-                      <h3 className="font-medium">{exam.title}</h3>
-                      <p className="text-sm text-gray-400">
+                      <h3 className="font-medium text-[#1E293B]">{exam.title}</h3>
+                      <p className="text-sm text-[#64748B]">
                         {new Date(exam.scheduledDate).toLocaleDateString()} at {exam.startTime}
                       </p>
                     </div>
                     <Link
                       to={`/exam/${exam._id}/start`}
-                      className="px-4 py-2 bg-orange-500/20 text-orange-400 rounded-lg text-sm font-medium hover:bg-orange-500/30 transition-colors"
+                      className="px-4 py-2 bg-[#2563EB]/10 text-[#2563EB] rounded-lg text-sm font-medium hover:bg-[#2563EB]/20 transition-colors"
                     >
                       Take Exam
                     </Link>
@@ -131,36 +131,36 @@ const StudentDashboard = () => {
                 ))}
               </div>
             ) : (
-              <div className="text-center py-8 text-gray-400">
-                <svg className="w-12 h-12 mx-auto mb-4 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="text-center py-8">
+                <svg className="w-12 h-12 mx-auto mb-4 text-[#CBD5E1]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                 </svg>
-                <p>No upcoming exams</p>
-                <Link to="/exams" className="text-orange-400 text-sm mt-2 inline-block">Browse available exams</Link>
+                <p className="text-[#64748B]">No upcoming exams</p>
+                <Link to="/exams" className="link text-sm mt-2 inline-block">Browse available exams</Link>
               </div>
             )}
           </div>
 
           <div className="glass-card p-6">
             <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-semibold">Recent Results</h2>
-              <Link to="/results" className="text-orange-400 hover:text-orange-300 text-sm">View All</Link>
+              <h2 className="text-xl font-semibold text-[#1E293B]">Recent Results</h2>
+              <Link to="/results" className="link text-sm">View All</Link>
             </div>
             {recentResults.length > 0 ? (
               <div className="space-y-4">
                 {recentResults.map((result) => (
-                  <div key={result._id} className="flex items-center justify-between p-4 bg-slate-800/50 rounded-lg">
+                  <div key={result._id} className="flex items-center justify-between p-4 bg-[#F1F5F9] rounded-xl">
                     <div>
-                      <h3 className="font-medium">{result.exam?.title}</h3>
-                      <p className="text-sm text-gray-400">
+                      <h3 className="font-medium text-[#1E293B]">{result.exam?.title}</h3>
+                      <p className="text-sm text-[#64748B]">
                         {new Date(result.submittedAt).toLocaleDateString()}
                       </p>
                     </div>
                     <div className="text-right">
-                      <p className={`text-lg font-bold ${result.isPassed ? 'text-green-400' : 'text-red-400'}`}>
+                      <p className={`text-lg font-bold ${result.isPassed ? 'text-[#10B981]' : 'text-[#EF4444]'}`}>
                         {result.percentage?.toFixed(1)}%
                       </p>
-                      <span className={`text-xs px-2 py-1 rounded ${result.isPassed ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'}`}>
+                      <span className={`badge ${result.isPassed ? 'badge-success' : 'badge-danger'}`}>
                         {result.isPassed ? 'Passed' : 'Failed'}
                       </span>
                     </div>
@@ -168,11 +168,11 @@ const StudentDashboard = () => {
                 ))}
               </div>
             ) : (
-              <div className="text-center py-8 text-gray-400">
-                <svg className="w-12 h-12 mx-auto mb-4 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="text-center py-8">
+                <svg className="w-12 h-12 mx-auto mb-4 text-[#CBD5E1]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                 </svg>
-                <p>No results yet</p>
+                <p className="text-[#64748B]">No results yet</p>
               </div>
             )}
           </div>
@@ -183,4 +183,3 @@ const StudentDashboard = () => {
 };
 
 export default StudentDashboard;
-
