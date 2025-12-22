@@ -30,84 +30,35 @@ const Sidebar = () => {
 
   const links = user?.role === 'admin' ? adminLinks : user?.role === 'proctor' ? proctorLinks : studentLinks;
 
-  const sidebarStyle = {
-    position: 'fixed',
-    left: '0',
-    top: '64px',
-    bottom: '0',
-    width: '260px',
-    backgroundColor: '#FFFFFF',
-    borderRight: '1px solid #E2E8F0',
-    padding: '24px 16px',
-    overflowY: 'auto',
-    display: 'flex',
-    flexDirection: 'column'
-  };
-
-  const navStyle = {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '4px',
-    flex: '1'
-  };
-
-  const getLinkStyle = (isActive) => ({
-    position: 'relative',
-    display: 'flex',
-    alignItems: 'center',
-    gap: '12px',
-    padding: '12px 16px',
-    borderRadius: '8px',
-    textDecoration: 'none',
-    fontSize: '14px',
-    fontWeight: isActive ? '600' : '500',
-    color: isActive ? '#2563EB' : '#64748B',
-    backgroundColor: isActive ? '#EFF6FF' : 'transparent',
-    transition: 'all 0.2s ease'
-  });
-
-  const activeIndicatorStyle = {
-    position: 'absolute',
-    left: '-16px',
-    top: '50%',
-    transform: 'translateY(-50%)',
-    width: '4px',
-    height: '24px',
-    backgroundColor: '#2563EB',
-    borderRadius: '0 4px 4px 0'
-  };
-
-  const userCardStyle = {
-    marginTop: 'auto',
-    padding: '16px',
-    background: 'linear-gradient(135deg, rgba(37, 99, 235, 0.08) 0%, rgba(37, 99, 235, 0.04) 100%)',
-    borderRadius: '12px',
-    border: '1px solid rgba(37, 99, 235, 0.15)'
-  };
-
   const roleColors = {
-    student: { bg: '#DBEAFE', text: '#1D4ED8' },
-    admin: { bg: '#F3E8FF', text: '#7C3AED' },
-    proctor: { bg: '#D1FAE5', text: '#059669' }
+    student: 'bg-blue-100 text-blue-700',
+    admin: 'bg-purple-100 text-purple-700',
+    proctor: 'bg-emerald-100 text-emerald-700'
   };
-
-  const currentRoleColor = roleColors[user?.role] || roleColors.student;
 
   return (
-    <aside style={sidebarStyle}>
-      <nav style={navStyle}>
+    <aside className="fixed left-0 top-16 bottom-0 w-[260px] bg-card border-r border-border py-6 px-4 overflow-y-auto flex flex-col">
+      <nav className="flex flex-col gap-1 flex-1">
         {links.map((link) => (
           <NavLink
             key={link.to}
             to={link.to}
             end={link.to === '/dashboard' || link.to === '/admin' || link.to === '/proctor'}
-            style={({ isActive }) => getLinkStyle(isActive)}
+            className={({ isActive }) =>
+              `relative flex items-center gap-3 py-3 px-4 rounded-lg no-underline text-sm font-medium transition-all duration-200 ${
+                isActive
+                  ? 'bg-primary-50 text-primary font-semibold'
+                  : 'text-text-muted hover:bg-surface-secondary hover:text-text-primary'
+              }`
+            }
           >
             {({ isActive }) => (
               <>
-                {isActive && <div style={activeIndicatorStyle} />}
+                {isActive && (
+                  <div className="absolute -left-4 top-1/2 -translate-y-1/2 w-1 h-6 bg-primary rounded-r" />
+                )}
                 <svg
-                  style={{ width: '20px', height: '20px', flexShrink: 0 }}
+                  className="w-5 h-5 shrink-0"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -121,21 +72,12 @@ const Sidebar = () => {
         ))}
       </nav>
 
-      <div style={userCardStyle}>
-        <p style={{ fontSize: '12px', color: '#64748B', marginBottom: '4px' }}>Logged in as</p>
-        <p style={{ fontSize: '14px', fontWeight: '600', color: '#1E293B', marginBottom: '8px' }}>
+      <div className="mt-auto p-4 bg-gradient-to-br from-primary/10 to-primary/5 rounded-xl border border-primary/15">
+        <p className="text-xs text-text-muted mb-1">Logged in as</p>
+        <p className="text-sm font-semibold text-text-primary mb-2">
           {user?.firstName} {user?.lastName}
         </p>
-        <span style={{
-          display: 'inline-block',
-          padding: '4px 10px',
-          fontSize: '12px',
-          fontWeight: '500',
-          backgroundColor: currentRoleColor.bg,
-          color: currentRoleColor.text,
-          borderRadius: '6px',
-          textTransform: 'capitalize'
-        }}>
+        <span className={`inline-block py-1 px-2.5 text-xs font-medium rounded-md capitalize ${roleColors[user?.role] || roleColors.student}`}>
           {user?.role}
         </span>
       </div>

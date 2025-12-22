@@ -7,6 +7,7 @@ import ProtectedRoute from './Components/ProtectedRoute';
 import Home from './Pages/Home';
 import Login from './Pages/Login';
 import Register from './Pages/Register';
+import VerifyEmail from './Pages/VerifyEmail';
 import ForgotPassword from './Pages/ForgotPassword';
 import ResetPassword from './Pages/ResetPassword';
 import Unauthorized from './Pages/Unauthorized';
@@ -15,7 +16,9 @@ import StudentDashboard from './Pages/StudentDashboard';
 import AvailableExams from './Pages/AvailableExams';
 import MyExams from './Pages/MyExams';
 import TakeExam from './Pages/TakeExam';
+import ExamInstructions from './Pages/ExamInstructions';
 import Results from './Pages/Results';
+import PerformanceTrends from './Pages/PerformanceTrends';
 import Profile from './Pages/Profile';
 
 import AdminDashboard from './Pages/Admin/AdminDashboard';
@@ -25,9 +28,15 @@ import QuestionBank from './Pages/Admin/QuestionBank';
 import CreateQuestion from './Pages/Admin/CreateQuestion';
 import ManageUsers from './Pages/Admin/ManageUsers';
 import Proctoring from './Pages/Admin/Proctoring';
+import ProctorAssignment from './Pages/Admin/ProctorAssignment';
+import PendingGrading from './Pages/Admin/PendingGrading';
+import ManualGrading from './Pages/Admin/ManualGrading';
 import Analytics from './Pages/Admin/Analytics';
 
 import ProctorDashboard from './Pages/Proctor/ProctorDashboard';
+import LiveSessions from './Pages/Proctor/LiveSessions';
+import FlaggedExams from './Pages/Proctor/FlaggedExams';
+import ActivityLogs from './Pages/Proctor/ActivityLogs';
 
 const App = () => {
   return (
@@ -37,6 +46,7 @@ const App = () => {
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/verify-email/:token" element={<VerifyEmail />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password/:token" element={<ResetPassword />} />
           <Route path="/unauthorized" element={<Unauthorized />} />
@@ -58,12 +68,22 @@ const App = () => {
           } />
           <Route path="/exam/:examId/start" element={
             <ProtectedRoute roles={['student']}>
+              <ExamInstructions />
+            </ProtectedRoute>
+          } />
+          <Route path="/exam/:examId/take" element={
+            <ProtectedRoute roles={['student']}>
               <TakeExam />
             </ProtectedRoute>
           } />
           <Route path="/results" element={
             <ProtectedRoute roles={['student']}>
               <Results />
+            </ProtectedRoute>
+          } />
+          <Route path="/trends" element={
+            <ProtectedRoute roles={['student']}>
+              <PerformanceTrends />
             </ProtectedRoute>
           } />
           <Route path="/profile" element={
@@ -117,6 +137,21 @@ const App = () => {
               <Proctoring />
             </ProtectedRoute>
           } />
+          <Route path="/admin/exams/:examId/proctors" element={
+            <ProtectedRoute roles={['admin']}>
+              <ProctorAssignment />
+            </ProtectedRoute>
+          } />
+          <Route path="/admin/grading" element={
+            <ProtectedRoute roles={['admin']}>
+              <PendingGrading />
+            </ProtectedRoute>
+          } />
+          <Route path="/admin/grading/:resultId" element={
+            <ProtectedRoute roles={['admin']}>
+              <ManualGrading />
+            </ProtectedRoute>
+          } />
           <Route path="/admin/analytics" element={
             <ProtectedRoute roles={['admin']}>
               <Analytics />
@@ -130,17 +165,17 @@ const App = () => {
           } />
           <Route path="/proctor/sessions" element={
             <ProtectedRoute roles={['proctor', 'admin']}>
-              <ProctorDashboard />
+              <LiveSessions />
             </ProtectedRoute>
           } />
           <Route path="/proctor/flags" element={
             <ProtectedRoute roles={['proctor', 'admin']}>
-              <ProctorDashboard />
+              <FlaggedExams />
             </ProtectedRoute>
           } />
           <Route path="/proctor/logs" element={
             <ProtectedRoute roles={['proctor', 'admin']}>
-              <ProctorDashboard />
+              <ActivityLogs />
             </ProtectedRoute>
           } />
         </Routes>

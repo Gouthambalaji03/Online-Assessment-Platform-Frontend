@@ -21,9 +21,9 @@ const Register = () => {
   const navigate = useNavigate();
 
   const roles = [
-    { id: 'student', label: 'Student', color: '#3B82F6', needsCode: false },
-    { id: 'admin', label: 'Admin', color: '#8B5CF6', needsCode: true },
-    { id: 'proctor', label: 'Proctor', color: '#10B981', needsCode: true }
+    { id: 'student', label: 'Student', color: 'blue', needsCode: false },
+    { id: 'admin', label: 'Admin', color: 'purple', needsCode: true },
+    { id: 'proctor', label: 'Proctor', color: 'green', needsCode: true }
   ];
 
   const handleSubmit = async (e) => {
@@ -71,190 +71,93 @@ const Register = () => {
 
   const currentRole = roles.find(r => r.id === activeRole);
 
-  const inputStyle = {
-    width: '100%',
-    padding: '12px 16px',
-    fontSize: '15px',
-    border: '1px solid #E2E8F0',
-    borderRadius: '10px',
-    backgroundColor: '#FFFFFF',
-    color: '#1E293B',
-    outline: 'none',
-    transition: 'border-color 0.2s ease, box-shadow 0.2s ease',
-    boxSizing: 'border-box'
+  const getRoleClasses = (roleId) => {
+    const baseClasses = "flex-1 py-2.5 px-3 rounded-lg border-none text-sm font-semibold cursor-pointer transition-all duration-200";
+    if (activeRole === roleId) {
+      return `${baseClasses} bg-white shadow-sm ${
+        roleId === 'student' ? 'text-blue-500' :
+        roleId === 'admin' ? 'text-purple-500' : 'text-emerald-500'
+      }`;
+    }
+    return `${baseClasses} bg-transparent text-text-muted`;
   };
 
-  const handleFocus = (e) => {
-    e.target.style.borderColor = currentRole.color;
-    e.target.style.boxShadow = `0 0 0 3px ${currentRole.color}20`;
+  const getButtonClasses = () => {
+    const baseClasses = "w-full py-3.5 px-6 text-base font-semibold text-white rounded-lg cursor-pointer transition-all duration-200 flex items-center justify-center gap-2";
+    if (loading) return `${baseClasses} bg-text-light cursor-not-allowed`;
+    if (activeRole === 'student') return `${baseClasses} bg-blue-500 hover:bg-blue-600`;
+    if (activeRole === 'admin') return `${baseClasses} bg-purple-500 hover:bg-purple-600`;
+    return `${baseClasses} bg-emerald-500 hover:bg-emerald-600`;
   };
 
-  const handleBlur = (e) => {
-    e.target.style.borderColor = '#E2E8F0';
-    e.target.style.boxShadow = 'none';
+  const getLinkColor = () => {
+    if (activeRole === 'student') return 'text-blue-500 hover:text-blue-600';
+    if (activeRole === 'admin') return 'text-purple-500 hover:text-purple-600';
+    return 'text-emerald-500 hover:text-emerald-600';
   };
 
   return (
-    <div style={{
-      minHeight: '100vh',
-      backgroundColor: '#F1F5F9',
-      display: 'flex',
-      flexDirection: 'column'
-    }}>
-      {/* Header */}
-      <header style={{
-        backgroundColor: '#FFFFFF',
-        borderBottom: '1px solid #E2E8F0',
-        padding: '16px 32px'
-      }}>
-        <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: '10px', textDecoration: 'none' }}>
-          <div style={{
-            width: '36px',
-            height: '36px',
-            borderRadius: '8px',
-            backgroundColor: '#3B82F6',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center'
-          }}>
-            <svg style={{ width: '20px', height: '20px', color: 'white' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <div className="min-h-screen bg-surface-secondary flex flex-col">
+      <header className="bg-card border-b border-border py-4 px-8">
+        <Link to="/" className="flex items-center gap-2.5 no-underline">
+          <div className="w-9 h-9 rounded-lg bg-blue-500 flex items-center justify-center">
+            <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
           </div>
-          <span style={{ fontSize: '20px', fontWeight: '700', color: '#1E293B' }}>AssessHub</span>
+          <span className="text-xl font-bold text-text-primary">AssessHub</span>
         </Link>
       </header>
 
-      {/* Main Content */}
-      <main style={{
-        flex: 1,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: '40px 20px'
-      }}>
-        {/* Card Container */}
-        <div style={{
-          backgroundColor: '#FFFFFF',
-          borderRadius: '16px',
-          boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
-          display: 'flex',
-          maxWidth: '950px',
-          width: '100%',
-          overflow: 'hidden'
-        }}>
-          {/* Left Side - Illustration */}
-          <div style={{
-            width: '420px',
-            flexShrink: 0,
-            backgroundColor: '#F8FAFC',
-            padding: '48px',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-            borderRight: '1px solid #E2E8F0'
-          }} className="hide-mobile">
-            <svg viewBox="0 0 400 400" style={{ width: '100%', maxWidth: '300px', marginBottom: '32px' }}>
-              {/* Background */}
+      <main className="flex-1 flex items-center justify-center p-5 md:p-10">
+        <div className="bg-card rounded-2xl shadow-lg flex max-w-[950px] w-full overflow-hidden">
+          <div className="w-[420px] shrink-0 bg-surface p-12 hidden md:flex flex-col items-center justify-center border-r border-border">
+            <svg viewBox="0 0 400 400" className="w-full max-w-[300px] mb-8">
               <circle cx="200" cy="200" r="150" fill="#EEF2FF" />
               <circle cx="200" cy="200" r="120" fill="#E0E7FF" opacity="0.5" />
-
-              {/* Registration Form */}
               <rect x="110" y="80" width="180" height="220" rx="12" fill="#FFFFFF" stroke="#CBD5E1" strokeWidth="2" />
-
-              {/* Form Header */}
               <rect x="130" y="100" width="140" height="8" rx="4" fill="#E2E8F0" />
-
-              {/* Avatar with Plus */}
               <circle cx="200" cy="145" r="25" fill="#DBEAFE" stroke="#3B82F6" strokeWidth="2" strokeDasharray="5 3" />
               <line x1="200" y1="135" x2="200" y2="155" stroke="#3B82F6" strokeWidth="3" strokeLinecap="round" />
               <line x1="190" y1="145" x2="210" y2="145" stroke="#3B82F6" strokeWidth="3" strokeLinecap="round" />
-
-              {/* Input Fields */}
               <rect x="130" y="185" width="60" height="10" rx="5" fill="#E2E8F0" />
               <rect x="200" y="185" width="60" height="10" rx="5" fill="#E2E8F0" />
               <rect x="130" y="205" width="130" height="10" rx="5" fill="#E2E8F0" />
               <rect x="130" y="225" width="130" height="10" rx="5" fill="#E2E8F0" />
               <rect x="130" y="245" width="130" height="10" rx="5" fill="#E2E8F0" />
-
-              {/* Checkbox */}
               <rect x="130" y="265" width="12" height="12" rx="2" fill="#DBEAFE" stroke="#3B82F6" strokeWidth="1" />
               <rect x="148" y="268" width="80" height="6" rx="3" fill="#E2E8F0" />
-
-              {/* Button */}
               <rect x="130" y="285" width="130" height="20" rx="10" fill="#3B82F6" />
-
-              {/* Person */}
               <ellipse cx="320" cy="320" rx="30" ry="6" fill="#E2E8F0" />
               <path d="M305 320 L305 275 Q305 260 320 260 Q335 260 335 275 L335 320" fill="#818CF8" />
               <circle cx="320" cy="245" r="18" fill="#FCD34D" />
               <circle cx="314" cy="242" r="2.5" fill="#1E293B" />
               <circle cx="326" cy="242" r="2.5" fill="#1E293B" />
               <path d="M315 250 Q320 254 325 250" stroke="#1E293B" strokeWidth="1.5" fill="none" />
-
-              {/* Pencil */}
               <rect x="280" y="280" width="8" height="40" rx="1" fill="#FCD34D" transform="rotate(-45 284 300)" />
               <polygon points="275,320 280,325 270,330" fill="#F8B4B4" transform="rotate(-45 275 325)" />
-
-              {/* Decorative Elements */}
               <circle cx="80" cy="150" r="8" fill="#86EFAC" />
               <circle cx="320" cy="100" r="6" fill="#FCD34D" />
               <rect x="70" y="250" width="12" height="12" rx="2" fill="#A5B4FC" transform="rotate(15 76 256)" />
               <circle cx="100" cy="300" r="5" fill="#FBBF24" />
             </svg>
 
-            <h2 style={{ fontSize: '20px', fontWeight: '700', color: '#1E293B', marginBottom: '8px', textAlign: 'center' }}>
-              Join AssessHub Today
-            </h2>
-            <p style={{ fontSize: '14px', color: '#64748B', textAlign: 'center', lineHeight: '1.6' }}>
+            <h2 className="text-xl font-bold text-text-primary mb-2 text-center">Join AssessHub Today</h2>
+            <p className="text-sm text-text-muted text-center leading-relaxed">
               Create your account and start your journey with seamless online assessments.
             </p>
           </div>
 
-          {/* Right Side - Form */}
-          <div style={{
-            flex: 1,
-            padding: '40px 48px',
-            overflowY: 'auto',
-            maxHeight: '80vh'
-          }}>
-            <h1 style={{
-              fontSize: '24px',
-              fontWeight: '700',
-              color: '#1E293B',
-              marginBottom: '24px',
-              textAlign: 'center'
-            }}>
-              Create Account
-            </h1>
+          <div className="flex-1 p-10 md:px-12 overflow-y-auto max-h-[80vh]">
+            <h1 className="text-2xl font-bold text-text-primary mb-6 text-center">Create Account</h1>
 
-            {/* Role Tabs */}
-            <div style={{
-              display: 'flex',
-              backgroundColor: '#F1F5F9',
-              borderRadius: '10px',
-              padding: '4px',
-              marginBottom: '24px'
-            }}>
+            <div className="flex bg-surface-secondary rounded-lg p-1 mb-6">
               {roles.map((role) => (
                 <button
                   key={role.id}
                   type="button"
                   onClick={() => setActiveRole(role.id)}
-                  style={{
-                    flex: 1,
-                    padding: '10px 12px',
-                    borderRadius: '8px',
-                    border: 'none',
-                    backgroundColor: activeRole === role.id ? '#FFFFFF' : 'transparent',
-                    color: activeRole === role.id ? role.color : '#64748B',
-                    fontSize: '14px',
-                    fontWeight: '600',
-                    cursor: 'pointer',
-                    transition: 'all 0.2s ease',
-                    boxShadow: activeRole === role.id ? '0 1px 3px rgba(0,0,0,0.1)' : 'none'
-                  }}
+                  className={getRoleClasses(role.id)}
                 >
                   {role.label}
                 </button>
@@ -262,111 +165,83 @@ const Register = () => {
             </div>
 
             {currentRole.needsCode && (
-              <div style={{
-                backgroundColor: '#FEF3C7',
-                border: '1px solid #FCD34D',
-                borderRadius: '8px',
-                padding: '12px 16px',
-                marginBottom: '20px',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '10px'
-              }}>
-                <svg style={{ width: '20px', height: '20px', color: '#D97706', flexShrink: 0 }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="bg-warning-light border border-warning rounded-lg py-3 px-4 mb-5 flex items-center gap-2.5">
+                <svg className="w-5 h-5 text-warning-dark shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
-                <span style={{ fontSize: '13px', color: '#92400E' }}>
+                <span className="text-xs text-warning-dark">
                   {currentRole.label} registration requires an organization code from your administrator.
                 </span>
               </div>
             )}
 
-            <form onSubmit={handleSubmit}>
-              {/* Name Fields */}
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '16px' }}>
-                <div>
-                  <label style={{ display: 'block', fontSize: '14px', fontWeight: '500', color: '#475569', marginBottom: '6px' }}>
-                    First Name
-                  </label>
+            <form onSubmit={handleSubmit} className="stack-md">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="form-group">
+                  <label className="label">First Name</label>
                   <input
                     type="text"
                     value={formData.firstName}
                     onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
                     placeholder="John"
                     required
-                    style={inputStyle}
-                    onFocus={handleFocus}
-                    onBlur={handleBlur}
+                    className="input"
                   />
                 </div>
-                <div>
-                  <label style={{ display: 'block', fontSize: '14px', fontWeight: '500', color: '#475569', marginBottom: '6px' }}>
-                    Last Name
-                  </label>
+                <div className="form-group">
+                  <label className="label">Last Name</label>
                   <input
                     type="text"
                     value={formData.lastName}
                     onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
                     placeholder="Doe"
                     required
-                    style={inputStyle}
-                    onFocus={handleFocus}
-                    onBlur={handleBlur}
+                    className="input"
                   />
                 </div>
               </div>
 
-              {/* Email */}
-              <div style={{ marginBottom: '16px' }}>
-                <label style={{ display: 'block', fontSize: '14px', fontWeight: '500', color: '#475569', marginBottom: '6px' }}>
-                  Email
-                </label>
-                <div style={{ position: 'relative' }}>
+              <div className="form-group">
+                <label className="label">Email</label>
+                <div className="relative">
                   <input
                     type="email"
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                     placeholder="john@example.com"
                     required
-                    style={{ ...inputStyle, paddingRight: '44px' }}
-                    onFocus={handleFocus}
-                    onBlur={handleBlur}
+                    className="input pr-11"
                   />
-                  <div style={{ position: 'absolute', right: '14px', top: '50%', transform: 'translateY(-50%)', color: '#94A3B8' }}>
-                    <svg style={{ width: '18px', height: '18px' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div className="absolute right-3.5 top-1/2 -translate-y-1/2 text-text-light">
+                    <svg className="w-[18px] h-[18px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                     </svg>
                   </div>
                 </div>
               </div>
 
-              {/* Password */}
-              <div style={{ marginBottom: '16px' }}>
-                <label style={{ display: 'block', fontSize: '14px', fontWeight: '500', color: '#475569', marginBottom: '6px' }}>
-                  Password
-                </label>
-                <div style={{ position: 'relative' }}>
+              <div className="form-group">
+                <label className="label">Password</label>
+                <div className="relative">
                   <input
                     type={showPassword ? 'text' : 'password'}
                     value={formData.password}
                     onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                     placeholder="Create a password"
                     required
-                    style={{ ...inputStyle, paddingRight: '44px' }}
-                    onFocus={handleFocus}
-                    onBlur={handleBlur}
+                    className="input pr-11"
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    style={{ position: 'absolute', right: '14px', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: '#94A3B8', padding: '0', display: 'flex' }}
+                    className="absolute right-3.5 top-1/2 -translate-y-1/2 bg-transparent border-none cursor-pointer text-text-light p-0 flex"
                   >
                     {showPassword ? (
-                      <svg style={{ width: '18px', height: '18px' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <svg className="w-[18px] h-[18px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
                       </svg>
                     ) : (
-                      <svg style={{ width: '18px', height: '18px' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <svg className="w-[18px] h-[18px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                       </svg>
@@ -375,33 +250,28 @@ const Register = () => {
                 </div>
               </div>
 
-              {/* Confirm Password */}
-              <div style={{ marginBottom: '16px' }}>
-                <label style={{ display: 'block', fontSize: '14px', fontWeight: '500', color: '#475569', marginBottom: '6px' }}>
-                  Confirm Password
-                </label>
-                <div style={{ position: 'relative' }}>
+              <div className="form-group">
+                <label className="label">Confirm Password</label>
+                <div className="relative">
                   <input
                     type={showConfirmPassword ? 'text' : 'password'}
                     value={formData.confirmPassword}
                     onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
                     placeholder="Confirm your password"
                     required
-                    style={{ ...inputStyle, paddingRight: '44px' }}
-                    onFocus={handleFocus}
-                    onBlur={handleBlur}
+                    className="input pr-11"
                   />
                   <button
                     type="button"
                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                    style={{ position: 'absolute', right: '14px', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', cursor: 'pointer', color: '#94A3B8', padding: '0', display: 'flex' }}
+                    className="absolute right-3.5 top-1/2 -translate-y-1/2 bg-transparent border-none cursor-pointer text-text-light p-0 flex"
                   >
                     {showConfirmPassword ? (
-                      <svg style={{ width: '18px', height: '18px' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <svg className="w-[18px] h-[18px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
                       </svg>
                     ) : (
-                      <svg style={{ width: '18px', height: '18px' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <svg className="w-[18px] h-[18px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                       </svg>
@@ -410,31 +280,22 @@ const Register = () => {
                 </div>
               </div>
 
-              {/* Secret Code (for Admin/Proctor) */}
               {currentRole.needsCode && (
-                <div style={{ marginBottom: '16px' }}>
-                  <label style={{ display: 'block', fontSize: '14px', fontWeight: '500', color: '#475569', marginBottom: '6px' }}>
-                    Organization Code <span style={{ color: '#EF4444' }}>*</span>
+                <div className="form-group">
+                  <label className="label">
+                    Organization Code <span className="text-error">*</span>
                   </label>
-                  <div style={{ position: 'relative' }}>
+                  <div className="relative">
                     <input
                       type="password"
                       value={formData.secretCode}
                       onChange={(e) => setFormData({ ...formData, secretCode: e.target.value })}
                       placeholder="Enter organization code"
                       required
-                      style={{ ...inputStyle, paddingRight: '44px', backgroundColor: '#FFFBEB', borderColor: '#FCD34D' }}
-                      onFocus={(e) => {
-                        e.target.style.borderColor = '#F59E0B';
-                        e.target.style.boxShadow = '0 0 0 3px rgba(245, 158, 11, 0.2)';
-                      }}
-                      onBlur={(e) => {
-                        e.target.style.borderColor = '#FCD34D';
-                        e.target.style.boxShadow = 'none';
-                      }}
+                      className="input pr-11 bg-warning-light/30 border-warning focus:border-warning-dark focus:ring-warning/20"
                     />
-                    <div style={{ position: 'absolute', right: '14px', top: '50%', transform: 'translateY(-50%)', color: '#F59E0B' }}>
-                      <svg style={{ width: '18px', height: '18px' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div className="absolute right-3.5 top-1/2 -translate-y-1/2 text-warning">
+                      <svg className="w-[18px] h-[18px]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
                       </svg>
                     </div>
@@ -442,53 +303,25 @@ const Register = () => {
                 </div>
               )}
 
-              {/* Terms Checkbox */}
-              <div style={{ display: 'flex', alignItems: 'flex-start', gap: '10px', marginBottom: '20px' }}>
+              <div className="flex items-start gap-2.5">
                 <input
                   type="checkbox"
                   checked={agreeTerms}
                   onChange={(e) => setAgreeTerms(e.target.checked)}
-                  style={{ width: '16px', height: '16px', marginTop: '2px', accentColor: currentRole.color, cursor: 'pointer' }}
+                  className="checkbox mt-0.5"
                 />
-                <span style={{ fontSize: '13px', color: '#64748B', lineHeight: '1.5' }}>
+                <span className="text-xs text-text-muted leading-relaxed">
                   I agree to the{' '}
-                  <a href="#" style={{ color: currentRole.color, textDecoration: 'none', fontWeight: '500' }}>Terms of Service</a>
+                  <a href="#" className={`no-underline font-medium ${getLinkColor()}`}>Terms of Service</a>
                   {' '}and{' '}
-                  <a href="#" style={{ color: currentRole.color, textDecoration: 'none', fontWeight: '500' }}>Privacy Policy</a>
+                  <a href="#" className={`no-underline font-medium ${getLinkColor()}`}>Privacy Policy</a>
                 </span>
               </div>
 
-              {/* Submit Button */}
-              <button
-                type="submit"
-                disabled={loading}
-                style={{
-                  width: '100%',
-                  padding: '14px 24px',
-                  fontSize: '16px',
-                  fontWeight: '600',
-                  color: '#FFFFFF',
-                  backgroundColor: loading ? '#94A3B8' : currentRole.color,
-                  border: 'none',
-                  borderRadius: '10px',
-                  cursor: loading ? 'not-allowed' : 'pointer',
-                  transition: 'all 0.2s ease',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: '8px'
-                }}
-              >
+              <button type="submit" disabled={loading} className={getButtonClasses()}>
                 {loading ? (
                   <>
-                    <div style={{
-                      width: '20px',
-                      height: '20px',
-                      border: '2px solid rgba(255,255,255,0.3)',
-                      borderTopColor: 'white',
-                      borderRadius: '50%',
-                      animation: 'spin 1s linear infinite'
-                    }}></div>
+                    <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
                     Creating account...
                   </>
                 ) : (
@@ -497,30 +330,15 @@ const Register = () => {
               </button>
             </form>
 
-            {/* Sign In Link */}
-            <p style={{
-              textAlign: 'center',
-              marginTop: '20px',
-              fontSize: '14px',
-              color: '#64748B'
-            }}>
+            <p className="text-center mt-5 text-sm text-text-muted">
               Already have an account?{' '}
-              <Link to="/login" style={{ color: currentRole.color, textDecoration: 'none', fontWeight: '600' }}>
+              <Link to="/login" className={`font-semibold no-underline ${getLinkColor()}`}>
                 Sign in
               </Link>
             </p>
           </div>
         </div>
       </main>
-
-      <style>{`
-        @keyframes spin {
-          to { transform: rotate(360deg); }
-        }
-        @media (max-width: 768px) {
-          .hide-mobile { display: none !important; }
-        }
-      `}</style>
     </div>
   );
 };

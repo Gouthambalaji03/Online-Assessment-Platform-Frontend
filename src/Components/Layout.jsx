@@ -3,15 +3,10 @@ import Sidebar from './Sidebar';
 
 const Layout = ({ children }) => {
   return (
-    <div style={{ minHeight: '100vh', backgroundColor: '#F1F5F9' }}>
+    <div className="min-h-screen bg-surface-secondary">
       <Navbar />
       <Sidebar />
-      <main style={{
-        marginLeft: '260px',
-        paddingTop: '72px',
-        padding: '88px 32px 32px 292px',
-        minHeight: '100vh'
-      }}>
+      <main className="ml-[260px] pt-[88px] pr-8 pb-8 pl-8 min-h-screen">
         {children}
       </main>
     </div>

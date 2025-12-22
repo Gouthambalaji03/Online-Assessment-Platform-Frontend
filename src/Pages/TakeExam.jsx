@@ -1,12 +1,15 @@
 import { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import api from '../Services/api';
 import { toast } from 'react-toastify';
+import VideoProctor from '../Components/VideoProctor';
 
 const TakeExam = () => {
   const { examId } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
   const [exam, setExam] = useState(null);
+  const [showVideoProctor, setShowVideoProctor] = useState(false);
   const [questions, setQuestions] = useState([]);
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState({});
@@ -82,6 +85,9 @@ const TakeExam = () => {
       
       if (response.data.exam.isProctored) {
         logProctoringEvent('exam_started', 'Exam session started');
+        if (response.data.exam.proctoringSettings?.videoMonitoring) {
+          setShowVideoProctor(true);
+        }
       }
     } catch (error) {
       toast.error(error.response?.data?.message || 'Failed to start exam');
@@ -328,6 +334,20 @@ const TakeExam = () => {
           </div>
 
           <div className="glass-card p-4 h-fit sticky top-24">
+            {/* Video Proctoring */}
+            {showVideoProctor && (
+              <div className="mb-4">
+                <VideoProctor
+                  examId={examId}
+                  resultId={resultId}
+                  isActive={showVideoProctor}
+                  onViolation={(violation) => {
+                    toast.warning(`Proctoring alert: ${violation.description}`);
+                  }}
+                />
+              </div>
+            )}
+
             <h3 className="font-semibold text-[#1E293B] mb-4">Question Navigator</h3>
             <div className="grid grid-cols-5 gap-2">
               {questions.map((q, idx) => (

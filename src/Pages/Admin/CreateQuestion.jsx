@@ -69,7 +69,7 @@ const CreateQuestion = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (formData.questionType === 'mcq') {
       if (!formData.options.some(opt => opt.isCorrect)) {
         toast.error('Please select a correct answer');
@@ -98,22 +98,220 @@ const CreateQuestion = () => {
     }
   };
 
+  // Inline styles
+  const containerStyle = {
+    maxWidth: '800px',
+    animation: 'fadeIn 0.3s ease-out'
+  };
+
+  const headerStyle = {
+    marginBottom: '32px'
+  };
+
+  const titleStyle = {
+    fontSize: '28px',
+    fontWeight: '700',
+    color: '#1E293B',
+    marginBottom: '8px'
+  };
+
+  const subtitleStyle = {
+    fontSize: '14px',
+    color: '#64748B'
+  };
+
+  const formStyle = {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '24px'
+  };
+
+  const cardStyle = {
+    backgroundColor: '#FFFFFF',
+    borderRadius: '16px',
+    padding: '24px',
+    boxShadow: '0 1px 3px rgba(0, 0, 0, 0.05)',
+    border: '1px solid #E2E8F0'
+  };
+
+  const cardTitleStyle = {
+    fontSize: '18px',
+    fontWeight: '600',
+    color: '#1E293B',
+    marginBottom: '16px'
+  };
+
+  const fieldGroupStyle = {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '16px'
+  };
+
+  const labelStyle = {
+    display: 'block',
+    fontSize: '14px',
+    fontWeight: '500',
+    color: '#475569',
+    marginBottom: '8px'
+  };
+
+  const inputStyle = {
+    width: '100%',
+    padding: '12px 16px',
+    fontSize: '14px',
+    color: '#1E293B',
+    backgroundColor: '#F8FAFC',
+    border: '1px solid #E2E8F0',
+    borderRadius: '10px',
+    outline: 'none',
+    transition: 'border-color 0.2s ease',
+    boxSizing: 'border-box'
+  };
+
+  const textareaStyle = {
+    ...inputStyle,
+    minHeight: '96px',
+    resize: 'vertical'
+  };
+
+  const textareaSmallStyle = {
+    ...inputStyle,
+    minHeight: '80px',
+    resize: 'vertical'
+  };
+
+  const gridStyle = {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(2, 1fr)',
+    gap: '16px'
+  };
+
+  const optionRowStyle = {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '12px',
+    marginBottom: '12px'
+  };
+
+  const radioStyle = {
+    width: '20px',
+    height: '20px',
+    accentColor: '#2563EB',
+    cursor: 'pointer'
+  };
+
+  const optionLabelStyle = {
+    width: '32px',
+    height: '32px',
+    borderRadius: '8px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    fontSize: '14px',
+    fontWeight: '500',
+    backgroundColor: '#F1F5F9',
+    color: '#475569',
+    border: '1px solid #E2E8F0',
+    flexShrink: 0
+  };
+
+  const removeButtonStyle = {
+    padding: '8px',
+    borderRadius: '8px',
+    color: '#EF4444',
+    backgroundColor: 'transparent',
+    border: 'none',
+    cursor: 'pointer',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center'
+  };
+
+  const addOptionButtonStyle = {
+    fontSize: '14px',
+    color: '#2563EB',
+    backgroundColor: 'transparent',
+    border: 'none',
+    cursor: 'pointer',
+    fontWeight: '500'
+  };
+
+  const hintStyle = {
+    fontSize: '12px',
+    color: '#94A3B8',
+    marginTop: '8px'
+  };
+
+  const buttonRowStyle = {
+    display: 'flex',
+    justifyContent: 'flex-end',
+    gap: '16px'
+  };
+
+  const cancelButtonStyle = {
+    padding: '12px 24px',
+    fontSize: '14px',
+    fontWeight: '500',
+    color: '#475569',
+    backgroundColor: '#F1F5F9',
+    border: '1px solid #E2E8F0',
+    borderRadius: '10px',
+    cursor: 'pointer',
+    transition: 'all 0.2s ease'
+  };
+
+  const submitButtonStyle = {
+    padding: '12px 24px',
+    fontSize: '14px',
+    fontWeight: '500',
+    color: '#FFFFFF',
+    background: 'linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%)',
+    border: 'none',
+    borderRadius: '10px',
+    cursor: loading ? 'not-allowed' : 'pointer',
+    opacity: loading ? 0.7 : 1,
+    display: 'flex',
+    alignItems: 'center',
+    gap: '8px',
+    transition: 'all 0.2s ease'
+  };
+
+  const spinnerStyle = {
+    width: '20px',
+    height: '20px',
+    border: '2px solid rgba(255, 255, 255, 0.3)',
+    borderTop: '2px solid #FFFFFF',
+    borderRadius: '50%',
+    animation: 'spin 1s linear infinite'
+  };
+
+  const optionHeaderStyle = {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: '12px'
+  };
+
   return (
     <Layout>
-      <div className="animate-fadeIn max-w-3xl">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold mb-2">{questionId ? 'Edit Question' : 'Create New Question'}</h1>
-          <p className="text-gray-400">Add a question to your question bank</p>
+      <style>{`
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes spin { to { transform: rotate(360deg); } }
+      `}</style>
+      <div style={containerStyle}>
+        <div style={headerStyle}>
+          <h1 style={titleStyle}>{questionId ? 'Edit Question' : 'Create New Question'}</h1>
+          <p style={subtitleStyle}>Add a question to your question bank</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="glass-card p-6">
-            <h2 className="text-lg font-semibold mb-4">Question Details</h2>
-            <div className="space-y-4">
+        <form onSubmit={handleSubmit} style={formStyle}>
+          <div style={cardStyle}>
+            <h2 style={cardTitleStyle}>Question Details</h2>
+            <div style={fieldGroupStyle}>
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">Question Type</label>
+                <label style={labelStyle}>Question Type</label>
                 <select
-                  className="input-field"
+                  style={inputStyle}
                   value={formData.questionType}
                   onChange={(e) => setFormData({ ...formData, questionType: e.target.value })}
                 >
@@ -123,9 +321,9 @@ const CreateQuestion = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">Question Text</label>
+                <label style={labelStyle}>Question Text</label>
                 <textarea
-                  className="input-field min-h-24"
+                  style={textareaStyle}
                   placeholder="Enter your question"
                   value={formData.questionText}
                   onChange={(e) => setFormData({ ...formData, questionText: e.target.value })}
@@ -135,32 +333,32 @@ const CreateQuestion = () => {
 
               {formData.questionType === 'mcq' ? (
                 <div>
-                  <div className="flex items-center justify-between mb-2">
-                    <label className="text-sm font-medium text-gray-300">Answer Options</label>
+                  <div style={optionHeaderStyle}>
+                    <label style={{ ...labelStyle, marginBottom: 0 }}>Answer Options</label>
                     <button
                       type="button"
                       onClick={addOption}
-                      className="text-sm text-orange-400 hover:text-orange-300"
+                      style={addOptionButtonStyle}
                     >
                       + Add Option
                     </button>
                   </div>
-                  <div className="space-y-3">
+                  <div>
                     {formData.options.map((option, index) => (
-                      <div key={index} className="flex items-center gap-3">
+                      <div key={index} style={optionRowStyle}>
                         <input
                           type="radio"
                           name="correctAnswer"
                           checked={option.isCorrect}
                           onChange={() => handleOptionChange(index, 'isCorrect', true)}
-                          className="w-5 h-5 text-orange-500"
+                          style={radioStyle}
                         />
-                        <span className="w-8 h-8 rounded-lg bg-slate-700 flex items-center justify-center text-sm">
+                        <span style={optionLabelStyle}>
                           {String.fromCharCode(65 + index)}
                         </span>
                         <input
                           type="text"
-                          className="input-field flex-1"
+                          style={{ ...inputStyle, flex: 1 }}
                           placeholder={`Option ${String.fromCharCode(65 + index)}`}
                           value={option.optionText}
                           onChange={(e) => handleOptionChange(index, 'optionText', e.target.value)}
@@ -170,9 +368,9 @@ const CreateQuestion = () => {
                           <button
                             type="button"
                             onClick={() => removeOption(index)}
-                            className="p-2 text-red-400 hover:bg-red-500/20 rounded-lg"
+                            style={removeButtonStyle}
                           >
-                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg style={{ width: '20px', height: '20px' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                             </svg>
                           </button>
@@ -180,13 +378,13 @@ const CreateQuestion = () => {
                       </div>
                     ))}
                   </div>
-                  <p className="text-xs text-gray-400 mt-2">Select the correct answer using the radio button</p>
+                  <p style={hintStyle}>Select the correct answer using the radio button</p>
                 </div>
               ) : (
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">Correct Answer</label>
+                  <label style={labelStyle}>Correct Answer</label>
                   <select
-                    className="input-field"
+                    style={inputStyle}
                     value={formData.correctAnswer}
                     onChange={(e) => setFormData({ ...formData, correctAnswer: e.target.value })}
                   >
@@ -198,14 +396,14 @@ const CreateQuestion = () => {
             </div>
           </div>
 
-          <div className="glass-card p-6">
-            <h2 className="text-lg font-semibold mb-4">Classification</h2>
-            <div className="grid md:grid-cols-2 gap-4">
+          <div style={cardStyle}>
+            <h2 style={cardTitleStyle}>Classification</h2>
+            <div style={gridStyle}>
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">Category</label>
+                <label style={labelStyle}>Category</label>
                 <input
                   type="text"
-                  className="input-field"
+                  style={inputStyle}
                   placeholder="e.g., Mathematics, Science"
                   value={formData.category}
                   onChange={(e) => setFormData({ ...formData, category: e.target.value })}
@@ -213,10 +411,10 @@ const CreateQuestion = () => {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">Topic</label>
+                <label style={labelStyle}>Topic</label>
                 <input
                   type="text"
-                  className="input-field"
+                  style={inputStyle}
                   placeholder="e.g., Algebra, Physics"
                   value={formData.topic}
                   onChange={(e) => setFormData({ ...formData, topic: e.target.value })}
@@ -224,9 +422,9 @@ const CreateQuestion = () => {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">Difficulty Level</label>
+                <label style={labelStyle}>Difficulty Level</label>
                 <select
-                  className="input-field"
+                  style={inputStyle}
                   value={formData.difficultyLevel}
                   onChange={(e) => setFormData({ ...formData, difficultyLevel: e.target.value })}
                 >
@@ -236,10 +434,10 @@ const CreateQuestion = () => {
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">Marks</label>
+                <label style={labelStyle}>Marks</label>
                 <input
                   type="number"
-                  className="input-field"
+                  style={inputStyle}
                   min="1"
                   value={formData.marks}
                   onChange={(e) => setFormData({ ...formData, marks: parseInt(e.target.value) })}
@@ -247,10 +445,10 @@ const CreateQuestion = () => {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">Negative Marks</label>
+                <label style={labelStyle}>Negative Marks</label>
                 <input
                   type="number"
-                  className="input-field"
+                  style={inputStyle}
                   min="0"
                   step="0.25"
                   value={formData.negativeMarks}
@@ -260,12 +458,12 @@ const CreateQuestion = () => {
             </div>
           </div>
 
-          <div className="glass-card p-6">
-            <h2 className="text-lg font-semibold mb-4">Additional Information</h2>
+          <div style={cardStyle}>
+            <h2 style={cardTitleStyle}>Additional Information</h2>
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">Explanation (Optional)</label>
+              <label style={labelStyle}>Explanation (Optional)</label>
               <textarea
-                className="input-field min-h-20"
+                style={textareaSmallStyle}
                 placeholder="Explain the correct answer (shown to students after submission)"
                 value={formData.explanation}
                 onChange={(e) => setFormData({ ...formData, explanation: e.target.value })}
@@ -273,20 +471,20 @@ const CreateQuestion = () => {
             </div>
           </div>
 
-          <div className="flex justify-end gap-4">
-            <button type="button" onClick={() => navigate('/admin/questions')} className="btn-secondary">
+          <div style={buttonRowStyle}>
+            <button type="button" onClick={() => navigate('/admin/questions')} style={cancelButtonStyle}>
               Cancel
             </button>
-            <button type="submit" disabled={loading} className="btn-primary flex items-center gap-2">
+            <button type="submit" disabled={loading} style={submitButtonStyle}>
               {loading ? (
                 <>
-                  <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                  <div style={spinnerStyle}></div>
                   Saving...
                 </>
               ) : (
                 <>
                   {questionId ? 'Update Question' : 'Create Question'}
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg style={{ width: '20px', height: '20px' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                   </svg>
                 </>
@@ -300,4 +498,3 @@ const CreateQuestion = () => {
 };
 
 export default CreateQuestion;
-

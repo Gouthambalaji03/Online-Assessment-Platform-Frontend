@@ -60,39 +60,43 @@ const Profile = () => {
 
   return (
     <Layout>
-      <div className="animate-fadeIn max-w-4xl">
+      <div className="animate-fadeIn max-w-3xl">
         <div className="mb-8">
-          <h1 className="text-[32px] font-bold text-[#1E293B] mb-2">Profile Settings</h1>
-          <p className="text-[#64748B]">Manage your account information and security</p>
+          <h1 className="text-3xl font-bold text-text-primary mb-2">Profile Settings</h1>
+          <p className="text-sm text-text-muted">Manage your account information and security</p>
         </div>
 
-        <div className="glass-card overflow-hidden">
-          <div className="p-6 border-b border-[#E2E8F0] bg-gradient-to-r from-[#2563EB]/10 to-transparent">
+        <div className="card overflow-hidden p-0">
+          <div className="p-6 border-b border-border bg-gradient-to-r from-primary/10 to-transparent">
             <div className="flex items-center gap-4">
-              <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-[#2563EB] to-[#3B82F6] flex items-center justify-center text-3xl font-bold text-white">
+              <div className="avatar avatar-xl">
                 {user?.firstName?.charAt(0)}{user?.lastName?.charAt(0)}
               </div>
               <div>
-                <h2 className="text-2xl font-bold text-[#1E293B]">{user?.firstName} {user?.lastName}</h2>
-                <p className="text-[#64748B]">{user?.email}</p>
-                <span className="badge badge-info mt-2 capitalize">{user?.role}</span>
+                <h2 className="text-2xl font-bold text-text-primary mb-1">{user?.firstName} {user?.lastName}</h2>
+                <p className="text-sm text-text-muted mb-2">{user?.email}</p>
+                <span className="badge-primary capitalize">{user?.role}</span>
               </div>
             </div>
           </div>
 
-          <div className="flex border-b border-[#E2E8F0]">
+          <div className="flex border-b border-border">
             <button
               onClick={() => setActiveTab('profile')}
-              className={`px-6 py-4 font-medium transition-colors ${
-                activeTab === 'profile' ? 'text-[#2563EB] border-b-2 border-[#2563EB]' : 'text-[#64748B] hover:text-[#1E293B]'
+              className={`py-4 px-6 text-sm font-medium border-b-2 transition-colors ${
+                activeTab === 'profile'
+                  ? 'text-primary border-primary'
+                  : 'text-text-muted border-transparent hover:text-text-primary'
               }`}
             >
               Profile
             </button>
             <button
               onClick={() => setActiveTab('security')}
-              className={`px-6 py-4 font-medium transition-colors ${
-                activeTab === 'security' ? 'text-[#2563EB] border-b-2 border-[#2563EB]' : 'text-[#64748B] hover:text-[#1E293B]'
+              className={`py-4 px-6 text-sm font-medium border-b-2 transition-colors ${
+                activeTab === 'security'
+                  ? 'text-primary border-primary'
+                  : 'text-text-muted border-transparent hover:text-text-primary'
               }`}
             >
               Security
@@ -101,23 +105,23 @@ const Profile = () => {
 
           <div className="p-6">
             {activeTab === 'profile' && (
-              <form onSubmit={handleProfileUpdate} className="space-y-6">
-                <div className="grid md:grid-cols-2 gap-6">
-                  <div>
-                    <label className="block text-sm font-medium text-[#475569] mb-2">First Name</label>
+              <form onSubmit={handleProfileUpdate} className="stack-md">
+                <div className="grid grid-cols-2 gap-6">
+                  <div className="form-group">
+                    <label className="label">First Name</label>
                     <input
                       type="text"
-                      className="input-field"
+                      className="input"
                       value={profileData.firstName}
                       onChange={(e) => setProfileData({ ...profileData, firstName: e.target.value })}
                       required
                     />
                   </div>
-                  <div>
-                    <label className="block text-sm font-medium text-[#475569] mb-2">Last Name</label>
+                  <div className="form-group">
+                    <label className="label">Last Name</label>
                     <input
                       type="text"
-                      className="input-field"
+                      className="input"
                       value={profileData.lastName}
                       onChange={(e) => setProfileData({ ...profileData, lastName: e.target.value })}
                       required
@@ -125,33 +129,29 @@ const Profile = () => {
                   </div>
                 </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-[#475569] mb-2">Email Address</label>
+                <div className="form-group">
+                  <label className="label">Email Address</label>
                   <input
                     type="email"
-                    className="input-field bg-[#F1F5F9]"
+                    className="input bg-surface-secondary text-text-muted cursor-not-allowed"
                     value={user?.email}
                     disabled
                   />
-                  <p className="text-xs text-[#94A3B8] mt-1">Email cannot be changed</p>
+                  <p className="text-xs text-text-light mt-1">Email cannot be changed</p>
                 </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-[#475569] mb-2">Phone Number</label>
+                <div className="form-group">
+                  <label className="label">Phone Number</label>
                   <input
                     type="tel"
-                    className="input-field"
+                    className="input"
                     placeholder="+1 (555) 000-0000"
                     value={profileData.phone}
                     onChange={(e) => setProfileData({ ...profileData, phone: e.target.value })}
                   />
                 </div>
 
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="btn-primary flex items-center gap-2"
-                >
+                <button type="submit" disabled={loading} className="btn-primary w-fit">
                   {loading ? (
                     <>
                       <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
@@ -170,12 +170,12 @@ const Profile = () => {
             )}
 
             {activeTab === 'security' && (
-              <form onSubmit={handlePasswordChange} className="space-y-6">
-                <div>
-                  <label className="block text-sm font-medium text-[#475569] mb-2">Current Password</label>
+              <form onSubmit={handlePasswordChange} className="stack-md">
+                <div className="form-group">
+                  <label className="label">Current Password</label>
                   <input
                     type="password"
-                    className="input-field"
+                    className="input"
                     placeholder="••••••••"
                     value={passwordData.currentPassword}
                     onChange={(e) => setPasswordData({ ...passwordData, currentPassword: e.target.value })}
@@ -183,11 +183,11 @@ const Profile = () => {
                   />
                 </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-[#475569] mb-2">New Password</label>
+                <div className="form-group">
+                  <label className="label">New Password</label>
                   <input
                     type="password"
-                    className="input-field"
+                    className="input"
                     placeholder="••••••••"
                     value={passwordData.newPassword}
                     onChange={(e) => setPasswordData({ ...passwordData, newPassword: e.target.value })}
@@ -195,11 +195,11 @@ const Profile = () => {
                   />
                 </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-[#475569] mb-2">Confirm New Password</label>
+                <div className="form-group">
+                  <label className="label">Confirm New Password</label>
                   <input
                     type="password"
-                    className="input-field"
+                    className="input"
                     placeholder="••••••••"
                     value={passwordData.confirmPassword}
                     onChange={(e) => setPasswordData({ ...passwordData, confirmPassword: e.target.value })}
@@ -207,11 +207,7 @@ const Profile = () => {
                   />
                 </div>
 
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="btn-primary flex items-center gap-2"
-                >
+                <button type="submit" disabled={loading} className="btn-primary w-fit">
                   {loading ? (
                     <>
                       <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
