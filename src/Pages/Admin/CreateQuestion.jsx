@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import Layout from '../../Components/Layout';
 import api from '../../Services/api';
 import { toast } from 'react-toastify';
@@ -7,87 +7,62 @@ import { toast } from 'react-toastify';
 const CreateQuestion = () => {
   const { questionId } = useParams();
   const navigate = useNavigate();
+  const isEdit = Boolean(questionId);
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     questionText: '',
     questionType: 'mcq',
-    options: [
-      { optionText: '', isCorrect: false },
-      { optionText: '', isCorrect: false },
-      { optionText: '', isCorrect: false },
-      { optionText: '', isCorrect: false }
-    ],
-    correctAnswer: 'true',
+    options: ['', '', '', ''],
+    correctAnswer: '',
     category: '',
     topic: '',
     difficultyLevel: 'medium',
     marks: 1,
-    negativeMarks: 0,
     explanation: ''
   });
 
   useEffect(() => {
-    if (questionId) {
-      fetchQuestionDetails();
-    }
+    if (isEdit) fetchQuestion();
   }, [questionId]);
 
-  const fetchQuestionDetails = async () => {
+  const fetchQuestion = async () => {
     try {
       const response = await api.get(`/questions/${questionId}`);
-      setFormData(response.data);
-    } catch (error) {
-      toast.error('Failed to fetch question details');
-    }
-  };
-
-  const handleOptionChange = (index, field, value) => {
-    const newOptions = [...formData.options];
-    if (field === 'isCorrect') {
-      newOptions.forEach((opt, i) => {
-        opt.isCorrect = i === index;
+      const q = response.data;
+      setFormData({
+        questionText: q.questionText,
+        questionType: q.questionType,
+        options: q.options?.length ? q.options : ['', '', '', ''],
+        correctAnswer: q.correctAnswer,
+        category: q.category || '',
+        topic: q.topic || '',
+        difficultyLevel: q.difficultyLevel || 'medium',
+        marks: q.marks || 1,
+        explanation: q.explanation || ''
       });
-    } else {
-      newOptions[index][field] = value;
-    }
-    setFormData({ ...formData, options: newOptions });
-  };
-
-  const addOption = () => {
-    setFormData({
-      ...formData,
-      options: [...formData.options, { optionText: '', isCorrect: false }]
-    });
-  };
-
-  const removeOption = (index) => {
-    if (formData.options.length > 2) {
-      const newOptions = formData.options.filter((_, i) => i !== index);
-      setFormData({ ...formData, options: newOptions });
+    } catch (error) {
+      toast.error('Failed to fetch question');
+      navigate('/admin/questions');
     }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    if (formData.questionType === 'mcq') {
-      if (!formData.options.some(opt => opt.isCorrect)) {
-        toast.error('Please select a correct answer');
-        return;
-      }
-      if (formData.options.some(opt => !opt.optionText.trim())) {
-        toast.error('All options must have text');
-        return;
-      }
+    if (!formData.correctAnswer) {
+      toast.error('Please select the correct answer');
+      return;
     }
-
     setLoading(true);
     try {
-      if (questionId) {
-        await api.put(`/questions/${questionId}`, formData);
+      const payload = {
+        ...formData,
+        options: formData.questionType === 'mcq' ? formData.options.filter(o => o.trim()) : undefined
+      };
+      if (isEdit) {
+        await api.put(`/questions/${questionId}`, payload);
         toast.success('Question updated successfully');
       } else {
-        await api.post('/questions', formData);
+        await api.post('/questions', payload);
         toast.success('Question created successfully');
       }
       navigate('/admin/questions');
@@ -98,396 +73,224 @@ const CreateQuestion = () => {
     }
   };
 
-  // Inline styles
-  const containerStyle = {
-    maxWidth: '800px',
-    animation: 'fadeIn 0.3s ease-out'
+  const handleOptionChange = (index, value) => {
+    const newOptions = [...formData.options];
+    newOptions[index] = value;
+    setFormData({ ...formData, options: newOptions });
   };
 
-  const headerStyle = {
-    marginBottom: '32px'
+  const addOption = () => {
+    setFormData({ ...formData, options: [...formData.options, ''] });
   };
 
-  const titleStyle = {
-    fontSize: '28px',
-    fontWeight: '700',
-    color: '#1E293B',
-    marginBottom: '8px'
-  };
-
-  const subtitleStyle = {
-    fontSize: '14px',
-    color: '#64748B'
-  };
-
-  const formStyle = {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '24px'
-  };
-
-  const cardStyle = {
-    backgroundColor: '#FFFFFF',
-    borderRadius: '16px',
-    padding: '24px',
-    boxShadow: '0 1px 3px rgba(0, 0, 0, 0.05)',
-    border: '1px solid #E2E8F0'
-  };
-
-  const cardTitleStyle = {
-    fontSize: '18px',
-    fontWeight: '600',
-    color: '#1E293B',
-    marginBottom: '16px'
-  };
-
-  const fieldGroupStyle = {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '16px'
-  };
-
-  const labelStyle = {
-    display: 'block',
-    fontSize: '14px',
-    fontWeight: '500',
-    color: '#475569',
-    marginBottom: '8px'
-  };
-
-  const inputStyle = {
-    width: '100%',
-    padding: '12px 16px',
-    fontSize: '14px',
-    color: '#1E293B',
-    backgroundColor: '#F8FAFC',
-    border: '1px solid #E2E8F0',
-    borderRadius: '10px',
-    outline: 'none',
-    transition: 'border-color 0.2s ease',
-    boxSizing: 'border-box'
-  };
-
-  const textareaStyle = {
-    ...inputStyle,
-    minHeight: '96px',
-    resize: 'vertical'
-  };
-
-  const textareaSmallStyle = {
-    ...inputStyle,
-    minHeight: '80px',
-    resize: 'vertical'
-  };
-
-  const gridStyle = {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(2, 1fr)',
-    gap: '16px'
-  };
-
-  const optionRowStyle = {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '12px',
-    marginBottom: '12px'
-  };
-
-  const radioStyle = {
-    width: '20px',
-    height: '20px',
-    accentColor: '#2563EB',
-    cursor: 'pointer'
-  };
-
-  const optionLabelStyle = {
-    width: '32px',
-    height: '32px',
-    borderRadius: '8px',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    fontSize: '14px',
-    fontWeight: '500',
-    backgroundColor: '#F1F5F9',
-    color: '#475569',
-    border: '1px solid #E2E8F0',
-    flexShrink: 0
-  };
-
-  const removeButtonStyle = {
-    padding: '8px',
-    borderRadius: '8px',
-    color: '#EF4444',
-    backgroundColor: 'transparent',
-    border: 'none',
-    cursor: 'pointer',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center'
-  };
-
-  const addOptionButtonStyle = {
-    fontSize: '14px',
-    color: '#2563EB',
-    backgroundColor: 'transparent',
-    border: 'none',
-    cursor: 'pointer',
-    fontWeight: '500'
-  };
-
-  const hintStyle = {
-    fontSize: '12px',
-    color: '#94A3B8',
-    marginTop: '8px'
-  };
-
-  const buttonRowStyle = {
-    display: 'flex',
-    justifyContent: 'flex-end',
-    gap: '16px'
-  };
-
-  const cancelButtonStyle = {
-    padding: '12px 24px',
-    fontSize: '14px',
-    fontWeight: '500',
-    color: '#475569',
-    backgroundColor: '#F1F5F9',
-    border: '1px solid #E2E8F0',
-    borderRadius: '10px',
-    cursor: 'pointer',
-    transition: 'all 0.2s ease'
-  };
-
-  const submitButtonStyle = {
-    padding: '12px 24px',
-    fontSize: '14px',
-    fontWeight: '500',
-    color: '#FFFFFF',
-    background: 'linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%)',
-    border: 'none',
-    borderRadius: '10px',
-    cursor: loading ? 'not-allowed' : 'pointer',
-    opacity: loading ? 0.7 : 1,
-    display: 'flex',
-    alignItems: 'center',
-    gap: '8px',
-    transition: 'all 0.2s ease'
-  };
-
-  const spinnerStyle = {
-    width: '20px',
-    height: '20px',
-    border: '2px solid rgba(255, 255, 255, 0.3)',
-    borderTop: '2px solid #FFFFFF',
-    borderRadius: '50%',
-    animation: 'spin 1s linear infinite'
-  };
-
-  const optionHeaderStyle = {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginBottom: '12px'
+  const removeOption = (index) => {
+    if (formData.options.length <= 2) return;
+    const newOptions = formData.options.filter((_, i) => i !== index);
+    setFormData({
+      ...formData,
+      options: newOptions,
+      correctAnswer: formData.correctAnswer === formData.options[index] ? '' : formData.correctAnswer
+    });
   };
 
   return (
     <Layout>
-      <style>{`
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes spin { to { transform: rotate(360deg); } }
-      `}</style>
-      <div style={containerStyle}>
-        <div style={headerStyle}>
-          <h1 style={titleStyle}>{questionId ? 'Edit Question' : 'Create New Question'}</h1>
-          <p style={subtitleStyle}>Add a question to your question bank</p>
+      <div className="animate-fade-in max-w-3xl">
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-text-primary mb-2">
+            {isEdit ? 'Edit Question' : 'Create Question'}
+          </h1>
+          <p className="text-sm text-text-muted">
+            {isEdit ? 'Update question details' : 'Add a new question to your question bank'}
+          </p>
         </div>
 
-        <form onSubmit={handleSubmit} style={formStyle}>
-          <div style={cardStyle}>
-            <h2 style={cardTitleStyle}>Question Details</h2>
-            <div style={fieldGroupStyle}>
-              <div>
-                <label style={labelStyle}>Question Type</label>
-                <select
-                  style={inputStyle}
-                  value={formData.questionType}
-                  onChange={(e) => setFormData({ ...formData, questionType: e.target.value })}
-                >
-                  <option value="mcq">Multiple Choice</option>
-                  <option value="true_false">True/False</option>
-                </select>
-              </div>
-
-              <div>
-                <label style={labelStyle}>Question Text</label>
+        <form onSubmit={handleSubmit}>
+          <div className="card mb-6">
+            <div className="flex flex-col gap-5">
+              <div className="form-group">
+                <label className="label">Question Text</label>
                 <textarea
-                  style={textareaStyle}
-                  placeholder="Enter your question"
                   value={formData.questionText}
                   onChange={(e) => setFormData({ ...formData, questionText: e.target.value })}
+                  placeholder="Enter your question..."
+                  className="textarea"
+                  rows={4}
                   required
                 />
               </div>
 
-              {formData.questionType === 'mcq' ? (
-                <div>
-                  <div style={optionHeaderStyle}>
-                    <label style={{ ...labelStyle, marginBottom: 0 }}>Answer Options</label>
-                    <button
-                      type="button"
-                      onClick={addOption}
-                      style={addOptionButtonStyle}
-                    >
-                      + Add Option
-                    </button>
-                  </div>
-                  <div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="form-group">
+                  <label className="label">Question Type</label>
+                  <select
+                    value={formData.questionType}
+                    onChange={(e) => setFormData({
+                      ...formData,
+                      questionType: e.target.value,
+                      correctAnswer: ''
+                    })}
+                    className="select"
+                  >
+                    <option value="mcq">Multiple Choice</option>
+                    <option value="true_false">True/False</option>
+                  </select>
+                </div>
+                <div className="form-group">
+                  <label className="label">Difficulty</label>
+                  <select
+                    value={formData.difficultyLevel}
+                    onChange={(e) => setFormData({ ...formData, difficultyLevel: e.target.value })}
+                    className="select"
+                  >
+                    <option value="easy">Easy</option>
+                    <option value="medium">Medium</option>
+                    <option value="hard">Hard</option>
+                  </select>
+                </div>
+              </div>
+
+              {formData.questionType === 'mcq' && (
+                <div className="form-group">
+                  <label className="label">Options (Select the correct answer)</label>
+                  <div className="flex flex-col gap-3">
                     {formData.options.map((option, index) => (
-                      <div key={index} style={optionRowStyle}>
+                      <div key={index} className="flex items-center gap-3">
                         <input
                           type="radio"
                           name="correctAnswer"
-                          checked={option.isCorrect}
-                          onChange={() => handleOptionChange(index, 'isCorrect', true)}
-                          style={radioStyle}
+                          checked={formData.correctAnswer === option && option.trim() !== ''}
+                          onChange={() => setFormData({ ...formData, correctAnswer: option })}
+                          className="w-5 h-5 accent-success"
+                          disabled={!option.trim()}
                         />
-                        <span style={optionLabelStyle}>
-                          {String.fromCharCode(65 + index)}
-                        </span>
                         <input
                           type="text"
-                          style={{ ...inputStyle, flex: 1 }}
+                          value={option}
+                          onChange={(e) => handleOptionChange(index, e.target.value)}
                           placeholder={`Option ${String.fromCharCode(65 + index)}`}
-                          value={option.optionText}
-                          onChange={(e) => handleOptionChange(index, 'optionText', e.target.value)}
-                          required
+                          className="input flex-1"
                         />
                         {formData.options.length > 2 && (
                           <button
                             type="button"
                             onClick={() => removeOption(index)}
-                            style={removeButtonStyle}
+                            className="p-2 rounded-lg bg-error/10 text-error hover:bg-error/20 transition-colors border-none cursor-pointer"
                           >
-                            <svg style={{ width: '20px', height: '20px' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                             </svg>
                           </button>
                         )}
                       </div>
                     ))}
                   </div>
-                  <p style={hintStyle}>Select the correct answer using the radio button</p>
+                  {formData.options.length < 6 && (
+                    <button
+                      type="button"
+                      onClick={addOption}
+                      className="mt-3 text-sm text-primary font-medium hover:underline"
+                    >
+                      + Add Option
+                    </button>
+                  )}
                 </div>
-              ) : (
-                <div>
-                  <label style={labelStyle}>Correct Answer</label>
-                  <select
-                    style={inputStyle}
-                    value={formData.correctAnswer}
-                    onChange={(e) => setFormData({ ...formData, correctAnswer: e.target.value })}
-                  >
-                    <option value="true">True</option>
-                    <option value="false">False</option>
-                  </select>
+              )}
+
+              {formData.questionType === 'true_false' && (
+                <div className="form-group">
+                  <label className="label">Correct Answer</label>
+                  <div className="flex gap-4">
+                    {['True', 'False'].map((option) => (
+                      <label
+                        key={option}
+                        className={`flex-1 flex items-center justify-center gap-2 p-4 rounded-xl cursor-pointer transition-colors border-2 ${
+                          formData.correctAnswer === option
+                            ? 'border-success bg-success-light'
+                            : 'border-border bg-surface hover:border-success/50'
+                        }`}
+                      >
+                        <input
+                          type="radio"
+                          name="correctAnswer"
+                          value={option}
+                          checked={formData.correctAnswer === option}
+                          onChange={(e) => setFormData({ ...formData, correctAnswer: e.target.value })}
+                          className="w-5 h-5 accent-success"
+                        />
+                        <span className="font-medium text-text-primary">{option}</span>
+                      </label>
+                    ))}
+                  </div>
                 </div>
               )}
             </div>
           </div>
 
-          <div style={cardStyle}>
-            <h2 style={cardTitleStyle}>Classification</h2>
-            <div style={gridStyle}>
-              <div>
-                <label style={labelStyle}>Category</label>
-                <input
-                  type="text"
-                  style={inputStyle}
-                  placeholder="e.g., Mathematics, Science"
-                  value={formData.category}
-                  onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                  required
-                />
+          <div className="card mb-6">
+            <h2 className="text-lg font-semibold text-text-primary mb-5">Additional Details</h2>
+            <div className="flex flex-col gap-5">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div className="form-group">
+                  <label className="label">Category</label>
+                  <input
+                    type="text"
+                    value={formData.category}
+                    onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                    placeholder="e.g., Mathematics"
+                    className="input"
+                  />
+                </div>
+                <div className="form-group">
+                  <label className="label">Topic</label>
+                  <input
+                    type="text"
+                    value={formData.topic}
+                    onChange={(e) => setFormData({ ...formData, topic: e.target.value })}
+                    placeholder="e.g., Algebra"
+                    className="input"
+                  />
+                </div>
+                <div className="form-group">
+                  <label className="label">Marks</label>
+                  <input
+                    type="number"
+                    value={formData.marks}
+                    onChange={(e) => setFormData({ ...formData, marks: parseInt(e.target.value) })}
+                    className="input"
+                    min="1"
+                  />
+                </div>
               </div>
-              <div>
-                <label style={labelStyle}>Topic</label>
-                <input
-                  type="text"
-                  style={inputStyle}
-                  placeholder="e.g., Algebra, Physics"
-                  value={formData.topic}
-                  onChange={(e) => setFormData({ ...formData, topic: e.target.value })}
-                  required
-                />
-              </div>
-              <div>
-                <label style={labelStyle}>Difficulty Level</label>
-                <select
-                  style={inputStyle}
-                  value={formData.difficultyLevel}
-                  onChange={(e) => setFormData({ ...formData, difficultyLevel: e.target.value })}
-                >
-                  <option value="easy">Easy</option>
-                  <option value="medium">Medium</option>
-                  <option value="hard">Hard</option>
-                </select>
-              </div>
-              <div>
-                <label style={labelStyle}>Marks</label>
-                <input
-                  type="number"
-                  style={inputStyle}
-                  min="1"
-                  value={formData.marks}
-                  onChange={(e) => setFormData({ ...formData, marks: parseInt(e.target.value) })}
-                  required
-                />
-              </div>
-              <div>
-                <label style={labelStyle}>Negative Marks</label>
-                <input
-                  type="number"
-                  style={inputStyle}
-                  min="0"
-                  step="0.25"
-                  value={formData.negativeMarks}
-                  onChange={(e) => setFormData({ ...formData, negativeMarks: parseFloat(e.target.value) })}
+              <div className="form-group">
+                <label className="label">Explanation (Optional)</label>
+                <textarea
+                  value={formData.explanation}
+                  onChange={(e) => setFormData({ ...formData, explanation: e.target.value })}
+                  placeholder="Explain the correct answer..."
+                  className="textarea"
+                  rows={3}
                 />
               </div>
             </div>
           </div>
 
-          <div style={cardStyle}>
-            <h2 style={cardTitleStyle}>Additional Information</h2>
-            <div>
-              <label style={labelStyle}>Explanation (Optional)</label>
-              <textarea
-                style={textareaSmallStyle}
-                placeholder="Explain the correct answer (shown to students after submission)"
-                value={formData.explanation}
-                onChange={(e) => setFormData({ ...formData, explanation: e.target.value })}
-              />
-            </div>
-          </div>
-
-          <div style={buttonRowStyle}>
-            <button type="button" onClick={() => navigate('/admin/questions')} style={cancelButtonStyle}>
+          <div className="flex justify-end gap-3">
+            <button
+              type="button"
+              onClick={() => navigate('/admin/questions')}
+              className="btn-secondary"
+            >
               Cancel
             </button>
-            <button type="submit" disabled={loading} style={submitButtonStyle}>
+            <button type="submit" disabled={loading} className="btn-primary">
               {loading ? (
                 <>
-                  <div style={spinnerStyle}></div>
+                  <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
                   Saving...
                 </>
               ) : (
-                <>
-                  {questionId ? 'Update Question' : 'Create Question'}
-                  <svg style={{ width: '20px', height: '20px' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
-                </>
+                isEdit ? 'Update Question' : 'Create Question'
               )}
             </button>
           </div>

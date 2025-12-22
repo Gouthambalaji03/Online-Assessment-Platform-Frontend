@@ -61,7 +61,7 @@ const Home = () => {
         </div>
 
         <div className="max-w-6xl mx-auto relative">
-          <div className="text-center animate-fadeIn">
+          <div className="text-center animate-fade-in">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 mb-6">
               <span className="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
               <span className="text-primary text-sm font-medium">Next-Gen Assessment Platform</span>

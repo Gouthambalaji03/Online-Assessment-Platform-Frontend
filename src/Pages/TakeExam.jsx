@@ -174,10 +174,10 @@ const TakeExam = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#F8FAFC] flex items-center justify-center">
+      <div className="min-h-screen bg-surface flex items-center justify-center">
         <div className="text-center">
-          <div className="w-16 h-16 border-4 border-[#2563EB] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-[#64748B]">Loading exam...</p>
+          <div className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-text-muted">Loading exam...</p>
         </div>
       </div>
     );
@@ -187,34 +187,34 @@ const TakeExam = () => {
   const progress = ((currentQuestion + 1) / questions.length) * 100;
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC]">
+    <div className="min-h-screen bg-surface">
       <div className="progress-bar">
         <div className="progress-bar-fill" style={{ width: `${progress}%` }}></div>
       </div>
 
       {showWarning && (
-        <div className="proctoring-warning flex items-center gap-3 text-[#EF4444]">
+        <div className="proctoring-warning flex items-center gap-3 text-error">
           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
           </svg>
           <div>
-            <p className="font-semibold text-[#1E293B]">Warning: Tab Switch Detected</p>
-            <p className="text-sm text-[#64748B]">Switches remaining: {(exam?.proctoringSettings?.tabSwitchLimit || 3) - tabSwitchCount}</p>
+            <p className="font-semibold text-text-primary">Warning: Tab Switch Detected</p>
+            <p className="text-sm text-text-muted">Switches remaining: {(exam?.proctoringSettings?.tabSwitchLimit || 3) - tabSwitchCount}</p>
           </div>
         </div>
       )}
 
-      <header className="fixed top-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-b border-[#E2E8F0]">
+      <header className="fixed top-0 left-0 right-0 z-40 bg-card/95 backdrop-blur-md border-b border-border">
         <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
           <div>
-            <h1 className="text-lg font-semibold text-[#1E293B]">{exam?.title}</h1>
-            <p className="text-sm text-[#64748B]">Question {currentQuestion + 1} of {questions.length}</p>
+            <h1 className="text-lg font-semibold text-text-primary">{exam?.title}</h1>
+            <p className="text-sm text-text-muted">Question {currentQuestion + 1} of {questions.length}</p>
           </div>
           <div className="flex items-center gap-4">
             {exam?.isProctored && (
               <div className="flex items-center gap-2 text-sm">
-                <div className="w-2 h-2 rounded-full bg-[#EF4444] animate-pulse"></div>
-                <span className="text-[#64748B] font-medium">Proctored</span>
+                <div className="w-2 h-2 rounded-full bg-error animate-pulse"></div>
+                <span className="text-text-muted font-medium">Proctored</span>
               </div>
             )}
             <div className={getTimerClass()}>
@@ -230,7 +230,7 @@ const TakeExam = () => {
             <div className="question-card">
               <div className="flex items-start justify-between mb-6">
                 <div className="flex items-center gap-3">
-                  <span className="w-10 h-10 rounded-xl bg-[#2563EB]/10 flex items-center justify-center text-[#2563EB] font-bold">
+                  <span className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary font-bold">
                     {currentQuestion + 1}
                   </span>
                   <div>
@@ -239,15 +239,15 @@ const TakeExam = () => {
                     }`}>
                       {currentQ?.questionType === 'mcq' ? 'Multiple Choice' : 'True/False'}
                     </span>
-                    <p className="text-sm text-[#64748B] mt-1">{currentQ?.marks} mark(s)</p>
+                    <p className="text-sm text-text-muted mt-1">{currentQ?.marks} mark(s)</p>
                   </div>
                 </div>
                 <button
                   onClick={() => toggleFlag(currentQuestion)}
-                  className={`p-2 rounded-lg transition-colors ${
+                  className={`p-2 rounded-lg transition-colors border-none cursor-pointer ${
                     flagged.has(currentQuestion) 
-                      ? 'bg-[#FEF3C7] text-[#F59E0B]' 
-                      : 'bg-[#F1F5F9] text-[#64748B] hover:text-[#F59E0B]'
+                      ? 'bg-warning-light text-warning' 
+                      : 'bg-surface-secondary text-text-muted hover:text-warning'
                   }`}
                 >
                   <svg className="w-5 h-5" fill={flagged.has(currentQuestion) ? 'currentColor' : 'none'} stroke="currentColor" viewBox="0 0 24 24">
@@ -256,9 +256,9 @@ const TakeExam = () => {
                 </button>
               </div>
 
-              <h2 className="text-xl text-[#1E293B] mb-8 leading-relaxed">{currentQ?.questionText}</h2>
+              <h2 className="text-xl text-text-primary mb-8 leading-relaxed">{currentQ?.questionText}</h2>
 
-              <div className="space-y-3">
+              <div className="flex flex-col gap-3">
                 {currentQ?.questionType === 'mcq' ? (
                   currentQ?.options.map((option, idx) => (
                     <button
@@ -277,7 +277,7 @@ const TakeExam = () => {
                       onClick={() => handleAnswer(currentQ._id, opt.toLowerCase())}
                       className={`option-btn ${answers[currentQ._id] === opt.toLowerCase() ? 'selected' : ''}`}
                     >
-                      <span className={`option-letter ${opt === 'True' ? 'text-[#10B981]' : 'text-[#EF4444]'}`}>
+                      <span className={`option-letter ${opt === 'True' ? 'text-success' : 'text-error'}`}>
                         {opt === 'True' ? '✓' : '✗'}
                       </span>
                       <span>{opt}</span>
@@ -291,7 +291,7 @@ const TakeExam = () => {
               <button
                 onClick={() => setCurrentQuestion(Math.max(0, currentQuestion - 1))}
                 disabled={currentQuestion === 0}
-                className="btn-secondary flex items-center gap-2 disabled:opacity-50"
+                className="btn-secondary disabled:opacity-50"
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -303,7 +303,7 @@ const TakeExam = () => {
                 <button
                   onClick={handleSubmit}
                   disabled={submitting}
-                  className="btn-primary flex items-center gap-2"
+                  className="btn-success"
                 >
                   {submitting ? (
                     <>
@@ -322,7 +322,7 @@ const TakeExam = () => {
               ) : (
                 <button
                   onClick={() => setCurrentQuestion(Math.min(questions.length - 1, currentQuestion + 1))}
-                  className="btn-primary flex items-center gap-2"
+                  className="btn-primary"
                 >
                   Next
                   <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -334,7 +334,6 @@ const TakeExam = () => {
           </div>
 
           <div className="glass-card p-4 h-fit sticky top-24">
-            {/* Video Proctoring */}
             {showVideoProctor && (
               <div className="mb-4">
                 <VideoProctor
@@ -348,7 +347,7 @@ const TakeExam = () => {
               </div>
             )}
 
-            <h3 className="font-semibold text-[#1E293B] mb-4">Question Navigator</h3>
+            <h3 className="font-semibold text-text-primary mb-4">Question Navigator</h3>
             <div className="grid grid-cols-5 gap-2">
               {questions.map((q, idx) => (
                 <button
@@ -365,18 +364,18 @@ const TakeExam = () => {
               ))}
             </div>
 
-            <div className="mt-6 space-y-2 text-sm">
+            <div className="mt-6 flex flex-col gap-2 text-sm">
               <div className="flex items-center gap-2">
-                <span className="w-4 h-4 rounded bg-[#10B981]"></span>
-                <span className="text-[#64748B]">Answered ({Object.keys(answers).length})</span>
+                <span className="w-4 h-4 rounded bg-success"></span>
+                <span className="text-text-muted">Answered ({Object.keys(answers).length})</span>
               </div>
               <div className="flex items-center gap-2">
-                <span className="w-4 h-4 rounded bg-[#F59E0B]"></span>
-                <span className="text-[#64748B]">Flagged ({flagged.size})</span>
+                <span className="w-4 h-4 rounded bg-warning"></span>
+                <span className="text-text-muted">Flagged ({flagged.size})</span>
               </div>
               <div className="flex items-center gap-2">
-                <span className="w-4 h-4 rounded border border-[#E2E8F0] bg-white"></span>
-                <span className="text-[#64748B]">Unanswered ({questions.length - Object.keys(answers).length})</span>
+                <span className="w-4 h-4 rounded border border-border bg-card"></span>
+                <span className="text-text-muted">Unanswered ({questions.length - Object.keys(answers).length})</span>
               </div>
             </div>
 

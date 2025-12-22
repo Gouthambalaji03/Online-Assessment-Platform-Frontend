@@ -15,9 +15,9 @@ const Login = () => {
   const navigate = useNavigate();
 
   const roles = [
-    { id: 'student', label: 'Student', color: 'blue' },
-    { id: 'admin', label: 'Admin', color: 'purple' },
-    { id: 'proctor', label: 'Proctor', color: 'green' }
+    { id: 'student', label: 'Student' },
+    { id: 'admin', label: 'Admin' },
+    { id: 'proctor', label: 'Proctor' }
   ];
 
   const handleSubmit = async (e) => {
@@ -59,36 +59,23 @@ const Login = () => {
     }
   };
 
-  const getRoleClasses = (roleId) => {
-    const baseClasses = "flex-1 py-2.5 px-4 rounded-lg border-none text-sm font-semibold cursor-pointer transition-all duration-200";
-    if (activeRole === roleId) {
-      return `${baseClasses} bg-white shadow-sm ${
-        roleId === 'student' ? 'text-blue-500' :
-        roleId === 'admin' ? 'text-purple-500' : 'text-emerald-500'
-      }`;
-    }
-    return `${baseClasses} bg-transparent text-text-muted`;
+  const getRoleColor = () => {
+    if (activeRole === 'student') return 'text-primary';
+    if (activeRole === 'admin') return 'text-purple-500';
+    return 'text-emerald-500';
   };
 
-  const getButtonClasses = () => {
-    const baseClasses = "w-full py-3.5 px-6 text-base font-semibold text-white rounded-lg cursor-pointer transition-all duration-200 flex items-center justify-center gap-2";
-    if (loading) return `${baseClasses} bg-text-light cursor-not-allowed`;
-    if (activeRole === 'student') return `${baseClasses} bg-blue-500 hover:bg-blue-600`;
-    if (activeRole === 'admin') return `${baseClasses} bg-purple-500 hover:bg-purple-600`;
-    return `${baseClasses} bg-emerald-500 hover:bg-emerald-600`;
-  };
-
-  const getLinkColor = () => {
-    if (activeRole === 'student') return 'text-blue-500 hover:text-blue-600';
-    if (activeRole === 'admin') return 'text-purple-500 hover:text-purple-600';
-    return 'text-emerald-500 hover:text-emerald-600';
+  const getButtonBg = () => {
+    if (activeRole === 'student') return 'bg-primary hover:bg-primary-hover';
+    if (activeRole === 'admin') return 'bg-purple-500 hover:bg-purple-600';
+    return 'bg-emerald-500 hover:bg-emerald-600';
   };
 
   return (
     <div className="min-h-screen bg-surface-secondary flex flex-col">
       <header className="bg-card border-b border-border py-4 px-8">
         <Link to="/" className="flex items-center gap-2.5 no-underline">
-          <div className="w-9 h-9 rounded-lg bg-blue-500 flex items-center justify-center">
+          <div className="w-9 h-9 rounded-lg bg-primary flex items-center justify-center">
             <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
@@ -98,9 +85,9 @@ const Login = () => {
       </header>
 
       <main className="flex-1 flex items-center justify-center p-5 md:p-10">
-        <div className="bg-card rounded-2xl shadow-lg flex max-w-[900px] w-full overflow-hidden">
+        <div className="bg-card rounded-2xl shadow-xl flex max-w-[900px] w-full overflow-hidden">
           <div className="flex-1 bg-surface p-12 hidden md:flex items-center justify-center border-r border-border">
-            <svg viewBox="0 0 400 400" className="w-full max-w-[320px]">
+            <svg viewBox="0 0 400 400" className="w-full max-w-[280px]">
               <circle cx="200" cy="200" r="150" fill="#EEF2FF" />
               <circle cx="200" cy="200" r="120" fill="#E0E7FF" opacity="0.5" />
               <rect x="120" y="100" width="160" height="180" rx="12" fill="#FFFFFF" stroke="#CBD5E1" strokeWidth="2" />
@@ -136,23 +123,27 @@ const Login = () => {
             </svg>
           </div>
 
-          <div className="flex-1 p-12 flex flex-col justify-center">
-            <h1 className="text-3xl font-bold text-text-primary mb-8 text-center">Login</h1>
+          <div className="flex-1 p-8 md:p-12 flex flex-col justify-center">
+            <h1 className="text-2xl md:text-3xl font-bold text-text-primary mb-8 text-center">Welcome Back</h1>
 
-            <div className="flex bg-surface-secondary rounded-lg p-1 mb-7">
+            <div className="flex bg-surface-secondary rounded-xl p-1 mb-7 gap-1">
               {roles.map((role) => (
                 <button
                   key={role.id}
                   type="button"
                   onClick={() => setActiveRole(role.id)}
-                  className={getRoleClasses(role.id)}
+                  className={`flex-1 py-2.5 px-4 rounded-lg border-none text-sm font-semibold cursor-pointer transition-all duration-200 ${
+                    activeRole === role.id
+                      ? `bg-card shadow-sm ${getRoleColor()}`
+                      : 'bg-transparent text-text-muted hover:text-text-secondary'
+                  }`}
                 >
                   {role.label}
                 </button>
               ))}
             </div>
 
-            <form onSubmit={handleSubmit} className="stack-md">
+            <form onSubmit={handleSubmit} className="flex flex-col gap-5">
               <div className="form-group">
                 <label className="label">Email</label>
                 <div className="relative">
@@ -186,7 +177,7 @@ const Login = () => {
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-4 top-1/2 -translate-y-1/2 bg-transparent border-none cursor-pointer text-text-light p-0 flex"
+                    className="absolute right-4 top-1/2 -translate-y-1/2 bg-transparent border-none cursor-pointer text-text-light p-0 flex hover:text-text-secondary"
                   >
                     {showPassword ? (
                       <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -205,14 +196,20 @@ const Login = () => {
               <div className="flex items-center justify-between">
                 <label className="flex items-center gap-2 cursor-pointer">
                   <input type="checkbox" className="checkbox" />
-                  <span className="text-sm text-text-muted">Remember Me</span>
+                  <span className="text-sm text-text-muted">Remember me</span>
                 </label>
-                <Link to="/forgot-password" className={`text-sm font-medium no-underline ${getLinkColor()}`}>
+                <Link to="/forgot-password" className={`text-sm font-medium no-underline ${getRoleColor()} hover:underline`}>
                   Forgot Password?
                 </Link>
               </div>
 
-              <button type="submit" disabled={loading} className={getButtonClasses()}>
+              <button
+                type="submit"
+                disabled={loading}
+                className={`w-full py-3.5 px-6 text-base font-semibold text-white rounded-xl cursor-pointer transition-all duration-200 flex items-center justify-center gap-2 border-none ${
+                  loading ? 'bg-text-light cursor-not-allowed' : getButtonBg()
+                }`}
+              >
                 {loading ? (
                   <>
                     <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
@@ -224,21 +221,23 @@ const Login = () => {
               </button>
 
               {needsVerification && (
-                <div className="mt-5 p-4 bg-warning-light rounded-lg border border-warning">
+                <div className="mt-4 p-4 bg-warning-light rounded-xl border border-warning">
                   <div className="flex items-start gap-3">
                     <svg className="w-6 h-6 text-warning shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                     </svg>
                     <div className="flex-1">
                       <p className="text-sm font-semibold text-warning-dark mb-2">Email Verification Required</p>
-                      <p className="text-xs text-warning-dark/80 mb-3">
+                      <p className="text-xs text-warning-dark mb-3">
                         Please check your email inbox and click the verification link to activate your account.
                       </p>
                       <button
                         type="button"
                         onClick={handleResendVerification}
                         disabled={resendingEmail}
-                        className={`py-2 px-4 ${resendingEmail ? 'bg-gray-300' : 'bg-warning'} text-white rounded-md text-xs font-medium ${resendingEmail ? 'cursor-not-allowed' : 'cursor-pointer'}`}
+                        className={`py-2 px-4 text-white rounded-lg text-xs font-medium transition-colors border-none cursor-pointer ${
+                          resendingEmail ? 'bg-text-light cursor-not-allowed' : 'bg-warning hover:bg-warning-dark'
+                        }`}
                       >
                         {resendingEmail ? 'Sending...' : 'Resend Verification Email'}
                       </button>
@@ -250,7 +249,7 @@ const Login = () => {
 
             <p className="text-center mt-6 text-sm text-text-muted">
               Don't have an account?{' '}
-              <Link to="/register" className={`font-semibold no-underline ${getLinkColor()}`}>
+              <Link to="/register" className={`font-semibold no-underline ${getRoleColor()} hover:underline`}>
                 Sign up
               </Link>
             </p>

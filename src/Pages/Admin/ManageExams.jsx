@@ -8,14 +8,16 @@ const ManageExams = () => {
   const [exams, setExams] = useState([]);
   const [loading, setLoading] = useState(true);
   const [deleteModal, setDeleteModal] = useState(null);
+  const [statusFilter, setStatusFilter] = useState('');
 
   useEffect(() => {
     fetchExams();
-  }, []);
+  }, [statusFilter]);
 
   const fetchExams = async () => {
     try {
-      const response = await api.get('/exams');
+      const params = statusFilter ? `?status=${statusFilter}` : '';
+      const response = await api.get(`/exams${params}`);
       setExams(response.data.exams || []);
     } catch (error) {
       toast.error('Failed to fetch exams');
@@ -35,147 +37,22 @@ const ManageExams = () => {
     }
   };
 
-  const getStatusStyle = (status) => {
-    const styles = {
-      draft: { bg: '#F1F5F9', text: '#64748B' },
-      scheduled: { bg: '#DBEAFE', text: '#1D4ED8' },
-      active: { bg: '#D1FAE5', text: '#059669' },
-      completed: { bg: '#F3E8FF', text: '#7C3AED' },
-      cancelled: { bg: '#FEE2E2', text: '#DC2626' }
+  const getStatusColor = (status) => {
+    const colors = {
+      draft: 'bg-surface-secondary text-text-muted',
+      scheduled: 'bg-primary-100 text-primary',
+      active: 'bg-success-light text-success-dark',
+      completed: 'bg-info-light text-info-dark',
+      cancelled: 'bg-error-light text-error-dark'
     };
-    return styles[status] || styles.draft;
-  };
-
-  const containerStyle = {
-    animation: 'fadeIn 0.3s ease-out'
-  };
-
-  const headerStyle = {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginBottom: '32px'
-  };
-
-  const titleStyle = {
-    fontSize: '28px',
-    fontWeight: '700',
-    color: '#1E293B',
-    marginBottom: '8px'
-  };
-
-  const subtitleStyle = {
-    fontSize: '14px',
-    color: '#64748B'
-  };
-
-  const createBtnStyle = {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '8px',
-    padding: '12px 24px',
-    backgroundColor: '#2563EB',
-    color: '#FFFFFF',
-    border: 'none',
-    borderRadius: '10px',
-    fontSize: '14px',
-    fontWeight: '500',
-    textDecoration: 'none',
-    cursor: 'pointer',
-    transition: 'all 0.2s ease'
-  };
-
-  const tableContainerStyle = {
-    backgroundColor: '#FFFFFF',
-    borderRadius: '16px',
-    boxShadow: '0 1px 3px rgba(0, 0, 0, 0.05)',
-    border: '1px solid #E2E8F0',
-    overflow: 'hidden'
-  };
-
-  const tableStyle = {
-    width: '100%',
-    borderCollapse: 'collapse'
-  };
-
-  const thStyle = {
-    padding: '16px 20px',
-    textAlign: 'left',
-    fontSize: '12px',
-    fontWeight: '600',
-    color: '#64748B',
-    textTransform: 'uppercase',
-    backgroundColor: '#F8FAFC',
-    borderBottom: '1px solid #E2E8F0'
-  };
-
-  const tdStyle = {
-    padding: '16px 20px',
-    fontSize: '14px',
-    color: '#1E293B',
-    borderBottom: '1px solid #F1F5F9'
-  };
-
-  const actionBtnStyle = (color) => ({
-    padding: '8px',
-    backgroundColor: `${color}15`,
-    color: color,
-    border: 'none',
-    borderRadius: '8px',
-    cursor: 'pointer',
-    transition: 'all 0.2s ease',
-    display: 'inline-flex',
-    alignItems: 'center',
-    justifyContent: 'center'
-  });
-
-  const emptyStateStyle = {
-    padding: '64px 24px',
-    textAlign: 'center'
-  };
-
-  const spinnerContainerStyle = {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    height: '60vh'
-  };
-
-  const spinnerStyle = {
-    width: '48px',
-    height: '48px',
-    border: '4px solid #E2E8F0',
-    borderTop: '4px solid #2563EB',
-    borderRadius: '50%',
-    animation: 'spin 1s linear infinite'
-  };
-
-  const modalOverlayStyle = {
-    position: 'fixed',
-    inset: '0',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    zIndex: '50'
-  };
-
-  const modalContentStyle = {
-    backgroundColor: '#FFFFFF',
-    borderRadius: '16px',
-    padding: '24px',
-    maxWidth: '400px',
-    width: '100%',
-    margin: '0 16px',
-    boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)'
+    return colors[status] || colors.draft;
   };
 
   if (loading) {
     return (
       <Layout>
-        <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
-        <div style={spinnerContainerStyle}>
-          <div style={spinnerStyle}></div>
+        <div className="flex items-center justify-center h-[60vh]">
+          <div className="w-12 h-12 border-4 border-border border-t-primary rounded-full animate-spin"></div>
         </div>
       </Layout>
     );
@@ -183,138 +60,139 @@ const ManageExams = () => {
 
   return (
     <Layout>
-      <style>{`
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes spin { to { transform: rotate(360deg); } }
-      `}</style>
-      <div style={containerStyle}>
-        <div style={headerStyle}>
+      <div className="animate-fade-in">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
           <div>
-            <h1 style={titleStyle}>Manage Exams</h1>
-            <p style={subtitleStyle}>Create, edit, and manage your assessments</p>
+            <h1 className="text-3xl font-bold text-text-primary mb-2">Manage Exams</h1>
+            <p className="text-sm text-text-muted">Create and manage your assessments</p>
           </div>
-          <Link to="/admin/exams/create" style={createBtnStyle}>
-            <svg style={{ width: '20px', height: '20px' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <Link to="/admin/exams/create" className="btn-primary no-underline">
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
             </svg>
             Create Exam
           </Link>
         </div>
 
+        <div className="card mb-6">
+          <select
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+            className="select max-w-[200px]"
+          >
+            <option value="">All Status</option>
+            <option value="draft">Draft</option>
+            <option value="scheduled">Scheduled</option>
+            <option value="active">Active</option>
+            <option value="completed">Completed</option>
+          </select>
+        </div>
+
         {exams.length > 0 ? (
-          <div style={tableContainerStyle}>
-            <table style={tableStyle}>
+          <div className="table-container">
+            <table className="w-full">
               <thead>
                 <tr>
-                  <th style={thStyle}>Exam Title</th>
-                  <th style={thStyle}>Category</th>
-                  <th style={thStyle}>Schedule</th>
-                  <th style={thStyle}>Questions</th>
-                  <th style={thStyle}>Status</th>
-                  <th style={{ ...thStyle, textAlign: 'right' }}>Actions</th>
+                  <th className="table-header text-left">Exam</th>
+                  <th className="table-header text-left">Schedule</th>
+                  <th className="table-header text-center">Duration</th>
+                  <th className="table-header text-center">Status</th>
+                  <th className="table-header text-center">Enrolled</th>
+                  <th className="table-header text-right">Actions</th>
                 </tr>
               </thead>
               <tbody>
-                {exams.map((exam) => {
-                  const statusStyle = getStatusStyle(exam.status);
-                  return (
-                    <tr key={exam._id}>
-                      <td style={tdStyle}>
-                        <p style={{ fontWeight: '600', color: '#1E293B', marginBottom: '4px' }}>{exam.title}</p>
-                        <p style={{ fontSize: '13px', color: '#64748B' }}>{exam.duration} mins • {exam.totalMarks} marks</p>
-                      </td>
-                      <td style={{ ...tdStyle, color: '#64748B' }}>{exam.category}</td>
-                      <td style={tdStyle}>
-                        <p style={{ fontSize: '14px', color: '#1E293B' }}>{new Date(exam.scheduledDate).toLocaleDateString()}</p>
-                        <p style={{ fontSize: '13px', color: '#64748B' }}>{exam.startTime} - {exam.endTime}</p>
-                      </td>
-                      <td style={tdStyle}>{exam.questions?.length || 0}</td>
-                      <td style={tdStyle}>
-                        <span style={{
-                          display: 'inline-block',
-                          padding: '4px 10px',
-                          fontSize: '12px',
-                          fontWeight: '500',
-                          backgroundColor: statusStyle.bg,
-                          color: statusStyle.text,
-                          borderRadius: '6px',
-                          textTransform: 'capitalize'
-                        }}>
-                          {exam.status}
-                        </span>
-                      </td>
-                      <td style={{ ...tdStyle, textAlign: 'right' }}>
-                        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px' }}>
-                          <Link to={`/admin/exams/${exam._id}/edit`} style={actionBtnStyle('#2563EB')}>
-                            <svg style={{ width: '16px', height: '16px' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                {exams.map((exam) => (
+                  <tr key={exam._id} className="table-row">
+                    <td className="py-4 px-5">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                          <svg className="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                          </svg>
+                        </div>
+                        <div>
+                          <p className="font-semibold text-text-primary">{exam.title}</p>
+                          <p className="text-xs text-text-muted">{exam.category}</p>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="py-4 px-5">
+                      <p className="text-sm text-text-primary">{new Date(exam.scheduledDate).toLocaleDateString()}</p>
+                      <p className="text-xs text-text-muted">{exam.startTime} - {exam.endTime}</p>
+                    </td>
+                    <td className="py-4 px-5 text-center">
+                      <span className="text-sm text-text-secondary">{exam.duration} min</span>
+                    </td>
+                    <td className="py-4 px-5 text-center">
+                      <span className={`badge ${getStatusColor(exam.status)}`}>
+                        {exam.status}
+                      </span>
+                    </td>
+                    <td className="py-4 px-5 text-center">
+                      <span className="text-sm font-medium text-text-primary">{exam.enrolledStudents?.length || 0}</span>
+                    </td>
+                    <td className="py-4 px-5">
+                      <div className="flex justify-end gap-2">
+                        <Link
+                          to={`/admin/exams/${exam._id}/edit`}
+                          className="p-2 rounded-lg bg-primary/10 text-primary hover:bg-primary/20 transition-colors"
+                        >
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                          </svg>
+                        </Link>
+                        {exam.isProctored && (
+                          <Link
+                            to={`/admin/exams/${exam._id}/proctors`}
+                            className="p-2 rounded-lg bg-warning/10 text-warning hover:bg-warning/20 transition-colors"
+                          >
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                             </svg>
                           </Link>
-                          <button onClick={() => setDeleteModal(exam)} style={actionBtnStyle('#EF4444')}>
-                            <svg style={{ width: '16px', height: '16px' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                            </svg>
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  );
-                })}
+                        )}
+                        <button
+                          onClick={() => setDeleteModal(exam)}
+                          className="p-2 rounded-lg bg-error/10 text-error hover:bg-error/20 transition-colors border-none cursor-pointer"
+                        >
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                          </svg>
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
               </tbody>
             </table>
           </div>
         ) : (
-          <div style={{ ...tableContainerStyle, ...emptyStateStyle }}>
-            <svg style={{ width: '64px', height: '64px', margin: '0 auto 16px', color: '#CBD5E1' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className="card text-center py-16">
+            <svg className="w-16 h-16 mx-auto mb-4 text-text-light" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
             </svg>
-            <h3 style={{ fontSize: '20px', fontWeight: '600', color: '#1E293B', marginBottom: '8px' }}>No Exams Created</h3>
-            <p style={{ fontSize: '14px', color: '#64748B', marginBottom: '24px' }}>Start by creating your first exam</p>
-            <Link to="/admin/exams/create" style={createBtnStyle}>
-              <svg style={{ width: '20px', height: '20px' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-              </svg>
+            <h3 className="text-xl font-semibold text-text-primary mb-2">No Exams Yet</h3>
+            <p className="text-sm text-text-muted mb-5">Create your first exam to get started</p>
+            <Link to="/admin/exams/create" className="btn-primary inline-flex no-underline">
               Create Exam
             </Link>
           </div>
         )}
 
         {deleteModal && (
-          <div style={modalOverlayStyle} onClick={() => setDeleteModal(null)}>
-            <div style={modalContentStyle} onClick={e => e.stopPropagation()}>
-              <h2 style={{ fontSize: '20px', fontWeight: '700', color: '#1E293B', marginBottom: '16px' }}>Delete Exam</h2>
-              <p style={{ fontSize: '14px', color: '#64748B', marginBottom: '24px' }}>
+          <div className="modal-overlay" onClick={() => setDeleteModal(null)}>
+            <div className="modal-content" onClick={e => e.stopPropagation()}>
+              <h2 className="text-xl font-bold text-text-primary mb-4">Delete Exam</h2>
+              <p className="text-text-muted mb-6">
                 Are you sure you want to delete "{deleteModal.title}"? This action cannot be undone.
               </p>
-              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px' }}>
-                <button
-                  onClick={() => setDeleteModal(null)}
-                  style={{
-                    padding: '10px 20px',
-                    backgroundColor: '#F1F5F9',
-                    color: '#64748B',
-                    border: 'none',
-                    borderRadius: '8px',
-                    fontSize: '14px',
-                    fontWeight: '500',
-                    cursor: 'pointer'
-                  }}
-                >
+              <div className="flex justify-end gap-3">
+                <button onClick={() => setDeleteModal(null)} className="btn-secondary">
                   Cancel
                 </button>
-                <button
-                  onClick={() => handleDelete(deleteModal._id)}
-                  style={{
-                    padding: '10px 20px',
-                    backgroundColor: '#EF4444',
-                    color: '#FFFFFF',
-                    border: 'none',
-                    borderRadius: '8px',
-                    fontSize: '14px',
-                    fontWeight: '500',
-                    cursor: 'pointer'
-                  }}
-                >
+                <button onClick={() => handleDelete(deleteModal._id)} className="btn-error">
                   Delete
                 </button>
               </div>

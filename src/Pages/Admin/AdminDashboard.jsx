@@ -4,9 +4,8 @@ import Layout from '../../Components/Layout';
 import api from '../../Services/api';
 
 const AdminDashboard = () => {
-  const [stats, setStats] = useState(null);
-  const [examStats, setExamStats] = useState(null);
-  const [questionStats, setQuestionStats] = useState(null);
+  const [stats, setStats] = useState({});
+  const [recentExams, setRecentExams] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -15,33 +14,35 @@ const AdminDashboard = () => {
 
   const fetchDashboardData = async () => {
     try {
-      const [resultStats, exams, questions] = await Promise.all([
-        api.get('/results/dashboard'),
+      const [examsRes, resultsRes] = await Promise.all([
         api.get('/exams/stats'),
-        api.get('/questions/stats')
+        api.get('/results/dashboard')
       ]);
-      setStats(resultStats.data);
-      setExamStats(exams.data);
-      setQuestionStats(questions.data);
+      setStats({
+        totalExams: examsRes.data.totalExams || 0,
+        activeExams: examsRes.data.activeExams || 0,
+        completedExams: examsRes.data.completedExams || 0,
+        totalSubmissions: resultsRes.data.totalResults || 0,
+        passRate: resultsRes.data.passPercentage || 0,
+        avgScore: resultsRes.data.avgScore || 0
+      });
+      const exams = await api.get('/exams?limit=5&sort=-createdAt');
+      setRecentExams(exams.data.exams || []);
     } catch (error) {
-      console.error('Error fetching dashboard data:', error);
+      console.error('Failed to fetch dashboard:', error);
     } finally {
       setLoading(false);
     }
   };
 
-  const quickActions = [
-    { to: '/admin/exams/create', icon: 'M12 4v16m8-8H4', label: 'Create Exam', color: 'warning' },
-    { to: '/admin/questions/create', icon: 'M12 4v16m8-8H4', label: 'Add Question', color: 'purple' },
-    { to: '/admin/users', icon: 'M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z', label: 'Manage Users', color: 'primary' },
-    { to: '/admin/proctoring', icon: 'M15 12a3 3 0 11-6 0 3 3 0 016 0z M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z', label: 'Proctoring', color: 'success' }
-  ];
-
-  const colorClasses = {
-    primary: { bg: 'bg-primary/10', text: 'text-primary' },
-    success: { bg: 'bg-success/10', text: 'text-success' },
-    warning: { bg: 'bg-warning/10', text: 'text-warning' },
-    purple: { bg: 'bg-purple-500/10', text: 'text-purple-500' }
+  const getStatusColor = (status) => {
+    const colors = {
+      draft: 'bg-surface-secondary text-text-muted',
+      scheduled: 'bg-primary-100 text-primary',
+      active: 'bg-success-light text-success-dark',
+      completed: 'bg-info-light text-info-dark'
+    };
+    return colors[status] || colors.draft;
   };
 
   if (loading) {
@@ -56,167 +57,158 @@ const AdminDashboard = () => {
 
   return (
     <Layout>
-      <div className="animate-fadeIn">
+      <div className="animate-fade-in">
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-text-primary mb-2">Admin Dashboard</h1>
-          <p className="text-sm text-text-muted">Overview of your assessment platform</p>
+          <p className="text-sm text-text-muted">Manage your assessment platform</p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
           <div className="card">
-            <div className="flex items-start justify-between mb-4">
+            <div className="flex items-center justify-between mb-4">
               <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
                 <svg className="w-6 h-6 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                 </svg>
               </div>
+              <span className="badge-info">Total</span>
             </div>
-            <p className="text-3xl font-bold text-text-primary mb-1">{examStats?.totalExams || 0}</p>
+            <p className="text-3xl font-bold text-text-primary mb-1">{stats.totalExams}</p>
             <p className="text-sm text-text-muted">Total Exams</p>
-            <div className="flex gap-3 mt-2 text-xs">
-              <span className="text-success">{examStats?.activeExams || 0} active</span>
-              <span className="text-warning">{examStats?.scheduledExams || 0} scheduled</span>
-            </div>
           </div>
 
           <div className="card">
-            <div className="flex items-start justify-between mb-4">
-              <div className="w-12 h-12 rounded-xl bg-purple-500/10 flex items-center justify-center">
-                <svg className="w-6 h-6 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-              </div>
-            </div>
-            <p className="text-3xl font-bold text-text-primary mb-1">{questionStats?.totalQuestions || 0}</p>
-            <p className="text-sm text-text-muted">Questions in Bank</p>
-          </div>
-
-          <div className="card">
-            <div className="flex items-start justify-between mb-4">
+            <div className="flex items-center justify-between mb-4">
               <div className="w-12 h-12 rounded-xl bg-success/10 flex items-center justify-center">
                 <svg className="w-6 h-6 text-success" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+              </div>
+              <span className="badge-success">Active</span>
+            </div>
+            <p className="text-3xl font-bold text-text-primary mb-1">{stats.activeExams}</p>
+            <p className="text-sm text-text-muted">Active Exams</p>
+          </div>
+
+          <div className="card">
+            <div className="flex items-center justify-between mb-4">
+              <div className="w-12 h-12 rounded-xl bg-warning/10 flex items-center justify-center">
+                <svg className="w-6 h-6 text-warning" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
               </div>
+              <span className="badge-warning">Submissions</span>
             </div>
-            <p className="text-3xl font-bold text-text-primary mb-1">{stats?.totalResults || 0}</p>
+            <p className="text-3xl font-bold text-text-primary mb-1">{stats.totalSubmissions}</p>
             <p className="text-sm text-text-muted">Total Submissions</p>
-            <div className="flex gap-3 mt-2 text-xs">
-              <span className="text-success">{stats?.passPercentage || 0}% pass rate</span>
-            </div>
           </div>
 
           <div className="card">
-            <div className="flex items-start justify-between mb-4">
-              <div className="w-12 h-12 rounded-xl bg-warning/10 flex items-center justify-center">
-                <svg className="w-6 h-6 text-warning" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="flex items-center justify-between mb-4">
+              <div className="w-12 h-12 rounded-xl bg-emerald-500/10 flex items-center justify-center">
+                <svg className="w-6 h-6 text-emerald-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
                 </svg>
               </div>
             </div>
-            <p className="text-3xl font-bold text-text-primary mb-1">{stats?.avgScore || 0}%</p>
+            <p className="text-3xl font-bold text-text-primary mb-1">{stats.passRate}%</p>
+            <p className="text-sm text-text-muted">Pass Rate</p>
+          </div>
+
+          <div className="card">
+            <div className="flex items-center justify-between mb-4">
+              <div className="w-12 h-12 rounded-xl bg-purple-500/10 flex items-center justify-center">
+                <svg className="w-6 h-6 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                </svg>
+              </div>
+            </div>
+            <p className="text-3xl font-bold text-text-primary mb-1">{Number(stats.avgScore || 0).toFixed(0)}%</p>
             <p className="text-sm text-text-muted">Average Score</p>
+          </div>
+
+          <div className="card">
+            <div className="flex items-center justify-between mb-4">
+              <div className="w-12 h-12 rounded-xl bg-info/10 flex items-center justify-center">
+                <svg className="w-6 h-6 text-info" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+            </div>
+            <p className="text-3xl font-bold text-text-primary mb-1">{stats.completedExams}</p>
+            <p className="text-sm text-text-muted">Completed Exams</p>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <div className="card">
             <div className="flex items-center justify-between mb-5">
-              <h2 className="text-lg font-semibold text-text-primary">Quick Actions</h2>
+              <h2 className="text-lg font-semibold text-text-primary">Recent Exams</h2>
+              <Link to="/admin/exams" className="text-sm text-primary font-medium no-underline hover:underline">View All</Link>
             </div>
-            <div className="grid grid-cols-2 gap-4">
-              {quickActions.map((action) => (
-                <Link
-                  key={action.to}
-                  to={action.to}
-                  className="block bg-surface rounded-xl p-5 text-center border border-border transition-all duration-200 hover:border-primary/30 hover:shadow-md no-underline"
-                >
-                  <div className={`w-12 h-12 rounded-xl ${colorClasses[action.color].bg} flex items-center justify-center mx-auto mb-3`}>
-                    <svg className={`w-6 h-6 ${colorClasses[action.color].text}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={action.icon} />
-                    </svg>
-                  </div>
-                  <p className="text-sm font-semibold text-text-primary">{action.label}</p>
-                </Link>
-              ))}
-            </div>
-          </div>
-
-          <div className="card">
-            <div className="flex items-center justify-between mb-5">
-              <h2 className="text-lg font-semibold text-text-primary">Recent Submissions</h2>
-              <Link to="/admin/analytics" className="text-sm text-primary font-medium no-underline hover:underline">View All</Link>
-            </div>
-            {stats?.recentResults?.length > 0 ? (
-              <div className="stack-sm">
-                {stats.recentResults.slice(0, 5).map((result) => (
-                  <div key={result._id} className="flex items-center justify-between p-3 bg-surface rounded-lg">
-                    <div className="flex items-center gap-3">
-                      <div className="avatar avatar-sm bg-border text-text-secondary">
-                        {result.student?.firstName?.charAt(0)}
+            {recentExams.length > 0 ? (
+              <div className="flex flex-col gap-3">
+                {recentExams.map((exam) => (
+                  <div key={exam._id} className="flex items-center justify-between p-4 bg-surface rounded-xl">
+                    <div className="flex items-center gap-4">
+                      <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                        <svg className="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                        </svg>
                       </div>
                       <div>
-                        <p className="text-sm font-semibold text-text-primary">
-                          {result.student?.firstName} {result.student?.lastName}
-                        </p>
-                        <p className="text-xs text-text-muted">{result.exam?.title}</p>
+                        <p className="font-semibold text-text-primary">{exam.title}</p>
+                        <p className="text-xs text-text-muted">{new Date(exam.scheduledDate).toLocaleDateString()}</p>
                       </div>
                     </div>
-                    <span className={`${result.isPassed ? 'badge-success' : 'badge-error'}`}>
-                      {result.percentage?.toFixed(0)}%
+                    <span className={`badge ${getStatusColor(exam.status)}`}>
+                      {exam.status}
                     </span>
                   </div>
                 ))}
               </div>
             ) : (
-              <p className="text-center text-text-muted py-8">No recent submissions</p>
+              <div className="text-center py-10">
+                <p className="text-text-muted">No exams yet</p>
+              </div>
             )}
           </div>
-        </div>
 
-        <div className="card">
-          <div className="flex items-center justify-between mb-5">
-            <h2 className="text-lg font-semibold text-text-primary">Question Bank Overview</h2>
-            <Link to="/admin/questions" className="text-sm text-primary font-medium no-underline hover:underline">Manage Questions</Link>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div>
-              <h3 className="text-xs text-text-muted font-medium mb-3">By Difficulty</h3>
-              <div className="stack-sm">
-                {questionStats?.difficultyStats?.map((stat) => (
-                  <div key={stat._id} className="flex items-center justify-between py-2 border-b border-surface-secondary last:border-0">
-                    <span className="text-sm text-text-primary capitalize">{stat._id}</span>
-                    <span className={`${
-                      stat._id === 'easy' ? 'badge-success' :
-                      stat._id === 'medium' ? 'badge-warning' : 'badge-error'
-                    }`}>{stat.count}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-            <div>
-              <h3 className="text-xs text-text-muted font-medium mb-3">By Type</h3>
-              <div className="stack-sm">
-                {questionStats?.typeStats?.map((stat) => (
-                  <div key={stat._id} className="flex items-center justify-between py-2 border-b border-surface-secondary last:border-0">
-                    <span className="text-sm text-text-primary capitalize">
-                      {stat._id === 'mcq' ? 'Multiple Choice' : stat._id === 'true_false' ? 'True/False' : stat._id}
-                    </span>
-                    <span className="badge-info">{stat.count}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-            <div>
-              <h3 className="text-xs text-text-muted font-medium mb-3">By Category</h3>
-              <div className="stack-sm max-h-40 overflow-y-auto">
-                {questionStats?.categoryStats?.slice(0, 5).map((stat) => (
-                  <div key={stat._id} className="flex items-center justify-between py-2 border-b border-surface-secondary last:border-0">
-                    <span className="text-sm text-text-primary truncate">{stat._id}</span>
-                    <span className="badge-neutral">{stat.count}</span>
-                  </div>
-                ))}
-              </div>
+          <div className="card">
+            <h2 className="text-lg font-semibold text-text-primary mb-5">Quick Actions</h2>
+            <div className="grid grid-cols-2 gap-4">
+              <Link to="/admin/exams/create" className="flex items-center gap-3 p-4 bg-primary/5 rounded-xl hover:bg-primary/10 transition-colors no-underline group">
+                <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
+                  <svg className="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                  </svg>
+                </div>
+                <span className="text-sm font-medium text-text-primary">Create Exam</span>
+              </Link>
+              <Link to="/admin/questions/create" className="flex items-center gap-3 p-4 bg-success/5 rounded-xl hover:bg-success/10 transition-colors no-underline group">
+                <div className="w-10 h-10 rounded-lg bg-success/10 flex items-center justify-center group-hover:bg-success/20 transition-colors">
+                  <svg className="w-5 h-5 text-success" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </div>
+                <span className="text-sm font-medium text-text-primary">Add Question</span>
+              </Link>
+              <Link to="/admin/users" className="flex items-center gap-3 p-4 bg-purple-500/5 rounded-xl hover:bg-purple-500/10 transition-colors no-underline group">
+                <div className="w-10 h-10 rounded-lg bg-purple-500/10 flex items-center justify-center group-hover:bg-purple-500/20 transition-colors">
+                  <svg className="w-5 h-5 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                  </svg>
+                </div>
+                <span className="text-sm font-medium text-text-primary">Manage Users</span>
+              </Link>
+              <Link to="/admin/analytics" className="flex items-center gap-3 p-4 bg-warning/5 rounded-xl hover:bg-warning/10 transition-colors no-underline group">
+                <div className="w-10 h-10 rounded-lg bg-warning/10 flex items-center justify-center group-hover:bg-warning/20 transition-colors">
+                  <svg className="w-5 h-5 text-warning" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                  </svg>
+                </div>
+                <span className="text-sm font-medium text-text-primary">Analytics</span>
+              </Link>
             </div>
           </div>
         </div>

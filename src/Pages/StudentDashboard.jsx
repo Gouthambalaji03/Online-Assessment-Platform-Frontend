@@ -45,7 +45,7 @@ const StudentDashboard = () => {
 
   return (
     <Layout>
-      <div className="animate-fadeIn">
+      <div className="animate-fade-in">
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-text-primary mb-2">Welcome back, {user?.firstName}!</h1>
           <p className="text-sm text-text-muted">Here's your assessment overview</p>
@@ -158,7 +158,7 @@ const StudentDashboard = () => {
                     </div>
                     <div className="text-right">
                       <p className={`text-lg font-bold ${result.isPassed ? 'text-success' : 'text-error'}`}>
-                        {result.percentage?.toFixed(1)}%
+                        {Number(result.percentage || 0).toFixed(1)}%
                       </p>
                       <span className={`inline-block py-1 px-2.5 text-xs font-medium rounded-md mt-1 ${
                         result.isPassed ? 'bg-success-light text-success-dark' : 'bg-error-light text-error-dark'

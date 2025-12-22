@@ -1,71 +1,106 @@
-import { Link, useNavigate } from 'react-router-dom';
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { useAuth } from '../Context/AuthContext';
 
 const Navbar = () => {
-  const { user, logout } = useAuth();
-  const navigate = useNavigate();
+  const { user } = useAuth();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  const handleLogout = () => {
-    logout();
-    navigate('/login');
+  const getDashboardLink = () => {
+    if (!user) return '/login';
+    if (user.role === 'admin') return '/admin';
+    if (user.role === 'proctor') return '/proctor';
+    return '/dashboard';
   };
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-40 bg-card border-b border-border h-16">
-      <div className="max-w-full h-full px-6 flex items-center justify-between">
-        <Link to="/" className="flex items-center gap-3 no-underline">
-          <div className="w-10 h-10 rounded-lg bg-primary flex items-center justify-center">
-            <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-          </div>
-          <span className="text-xl font-bold text-text-primary">AssessHub</span>
-        </Link>
+    <nav className="bg-card/90 backdrop-blur-md border-b border-border sticky top-0 z-50">
+      <div className="max-w-6xl mx-auto px-4 md:px-8">
+        <div className="flex items-center justify-between h-16">
+          <Link to="/" className="flex items-center gap-2.5 no-underline">
+            <div className="w-9 h-9 rounded-xl bg-primary flex items-center justify-center">
+              <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <span className="text-xl font-bold text-text-primary">AssessHub</span>
+          </Link>
 
-        <div className="flex items-center gap-4">
-          {user ? (
-            <>
-              <Link
-                to={user.role === 'admin' ? '/admin' : user.role === 'proctor' ? '/proctor' : '/dashboard'}
-                className="text-text-secondary no-underline text-sm font-medium px-4 py-2 rounded-lg transition-all duration-200 hover:bg-surface-secondary hover:text-text-primary"
-              >
+          <div className="hidden md:flex items-center gap-6">
+            <a href="#features" className="text-sm text-text-muted hover:text-text-primary transition-colors no-underline">
+              Features
+            </a>
+            <a href="#pricing" className="text-sm text-text-muted hover:text-text-primary transition-colors no-underline">
+              Pricing
+            </a>
+            <a href="#about" className="text-sm text-text-muted hover:text-text-primary transition-colors no-underline">
+              About
+            </a>
+          </div>
+
+          <div className="hidden md:flex items-center gap-3">
+            {user ? (
+              <Link to={getDashboardLink()} className="btn-primary text-sm no-underline">
                 Dashboard
               </Link>
-              <div className="flex items-center gap-3">
-                <div className="avatar">
-                  {user.firstName?.charAt(0)}{user.lastName?.charAt(0)}
-                </div>
-                <span className="text-sm text-text-secondary font-medium">
-                  {user.firstName} {user.lastName}
-                </span>
-                <button
-                  onClick={handleLogout}
-                  className="bg-transparent border-none p-2 cursor-pointer text-text-muted flex items-center justify-center rounded-lg transition-all duration-200 hover:bg-surface-secondary hover:text-text-primary"
-                  title="Logout"
-                >
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                  </svg>
-                </button>
-              </div>
-            </>
-          ) : (
-            <>
-              <Link
-                to="/login"
-                className="bg-surface-secondary text-text-secondary py-2.5 px-5 rounded-lg text-sm font-medium no-underline transition-all duration-200 hover:bg-border"
-              >
-                Sign In
-              </Link>
-              <Link
-                to="/register"
-                className="btn-primary py-2.5 px-5 no-underline"
-              >
-                Get Started
-              </Link>
-            </>
-          )}
+            ) : (
+              <>
+                <Link to="/login" className="btn-secondary text-sm no-underline">
+                  Sign In
+                </Link>
+                <Link to="/register" className="btn-primary text-sm no-underline">
+                  Get Started
+                </Link>
+              </>
+            )}
+          </div>
+
+          <button
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="md:hidden p-2 rounded-lg bg-transparent border-none cursor-pointer text-text-muted hover:text-text-primary hover:bg-surface-secondary transition-colors"
+          >
+            {mobileMenuOpen ? (
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            ) : (
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            )}
+          </button>
         </div>
+
+        {mobileMenuOpen && (
+          <div className="md:hidden py-4 border-t border-border">
+            <div className="flex flex-col gap-2">
+              <a href="#features" className="py-2 px-4 text-text-muted hover:text-text-primary hover:bg-surface-secondary rounded-lg transition-colors no-underline">
+                Features
+              </a>
+              <a href="#pricing" className="py-2 px-4 text-text-muted hover:text-text-primary hover:bg-surface-secondary rounded-lg transition-colors no-underline">
+                Pricing
+              </a>
+              <a href="#about" className="py-2 px-4 text-text-muted hover:text-text-primary hover:bg-surface-secondary rounded-lg transition-colors no-underline">
+                About
+              </a>
+              <div className="border-t border-border my-2"></div>
+              {user ? (
+                <Link to={getDashboardLink()} className="btn-primary text-center no-underline">
+                  Dashboard
+                </Link>
+              ) : (
+                <>
+                  <Link to="/login" className="btn-secondary text-center no-underline">
+                    Sign In
+                  </Link>
+                  <Link to="/register" className="btn-primary text-center no-underline">
+                    Get Started
+                  </Link>
+                </>
+              )}
+            </div>
+          </div>
+        )}
       </div>
     </nav>
   );
