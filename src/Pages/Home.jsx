@@ -54,118 +54,128 @@ const Home = () => {
     <div className="min-h-screen bg-surface">
       <Navbar />
 
-      <section className="relative pt-32 pb-20 px-4 overflow-hidden">
+      {/* Hero Section - Responsive */}
+      <section className="relative pt-20 sm:pt-24 md:pt-32 pb-12 sm:pb-16 md:pb-20 px-4 overflow-hidden">
+        {/* Background gradients - responsive sizing */}
         <div className="absolute inset-0">
-          <div className="absolute top-20 left-1/4 w-[500px] h-[500px] bg-primary/10 rounded-full blur-[100px]"></div>
-          <div className="absolute bottom-20 right-1/4 w-[400px] h-[400px] bg-success/10 rounded-full blur-[80px]"></div>
+          <div className="absolute top-10 sm:top-20 left-1/4 w-[250px] sm:w-[350px] md:w-[500px] h-[250px] sm:h-[350px] md:h-[500px] bg-primary/10 rounded-full blur-[60px] sm:blur-[80px] md:blur-[100px]"></div>
+          <div className="absolute bottom-10 sm:bottom-20 right-1/4 w-[200px] sm:w-[300px] md:w-[400px] h-[200px] sm:h-[300px] md:h-[400px] bg-success/10 rounded-full blur-[50px] sm:blur-[60px] md:blur-[80px]"></div>
         </div>
 
         <div className="max-w-6xl mx-auto relative">
           <div className="text-center animate-fade-in">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 mb-6">
-              <span className="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
-              <span className="text-primary text-sm font-medium">Next-Gen Assessment Platform</span>
+            {/* Badge */}
+            <div className="inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-primary/10 border border-primary/20 mb-4 sm:mb-6">
+              <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-primary animate-pulse"></span>
+              <span className="text-primary text-xs sm:text-sm font-medium">Next-Gen Assessment Platform</span>
             </div>
 
-            <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight text-text-primary">
+            {/* Heading */}
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-bold mb-4 sm:mb-6 leading-tight text-text-primary">
               Transform Your
               <span className="block gradient-text">
                 Online Assessments
               </span>
             </h1>
 
-            <p className="text-xl text-text-muted max-w-2xl mx-auto mb-10 leading-relaxed">
-              A comprehensive platform for conducting secure online exams with advanced proctoring, 
+            {/* Description */}
+            <p className="text-base sm:text-lg md:text-xl text-text-muted max-w-2xl mx-auto mb-6 sm:mb-8 md:mb-10 leading-relaxed px-2">
+              A comprehensive platform for conducting secure online exams with advanced proctoring,
               automated grading, and powerful analytics.
             </p>
 
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <Link to="/register" className="btn-primary text-base px-8 py-4 no-underline">
+            {/* CTA Buttons */}
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 px-4 sm:px-0">
+              <Link to="/register" className="btn-primary text-sm sm:text-base px-6 sm:px-8 py-3 sm:py-4 no-underline w-full sm:w-auto justify-center">
                 Get Started Free
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
                 </svg>
               </Link>
-              <Link to="/login" className="btn-secondary text-base px-8 py-4 no-underline">
+              <Link to="/login" className="btn-secondary text-sm sm:text-base px-6 sm:px-8 py-3 sm:py-4 no-underline w-full sm:w-auto justify-center">
                 Sign In
               </Link>
             </div>
           </div>
 
-          <div className="mt-20 grid grid-cols-2 md:grid-cols-4 gap-8">
+          {/* Stats */}
+          <div className="mt-12 sm:mt-16 md:mt-20 grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 md:gap-8">
             {[
               { number: '50K+', label: 'Students' },
               { number: '1000+', label: 'Exams Conducted' },
               { number: '99.9%', label: 'Uptime' },
               { number: '4.9/5', label: 'Rating' }
             ].map((stat, i) => (
-              <div key={i} className="text-center">
-                <p className="text-4xl font-bold text-primary">{stat.number}</p>
-                <p className="text-text-muted mt-1 font-medium">{stat.label}</p>
+              <div key={i} className="text-center p-2 sm:p-3 md:p-4">
+                <p className="text-2xl sm:text-3xl md:text-4xl font-bold text-primary">{stat.number}</p>
+                <p className="text-text-muted mt-1 text-xs sm:text-sm font-medium">{stat.label}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      <section className="py-20 px-4 bg-card">
+      {/* Features Section */}
+      <section className="py-12 sm:py-16 md:py-20 px-4 bg-card">
         <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold mb-4 text-text-primary">Powerful Features</h2>
-            <p className="text-text-muted text-lg">Everything you need to conduct secure and efficient online assessments</p>
+          <div className="text-center mb-8 sm:mb-12 md:mb-16">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 sm:mb-4 text-text-primary">Powerful Features</h2>
+            <p className="text-text-muted text-sm sm:text-base md:text-lg max-w-2xl mx-auto px-2">Everything you need to conduct secure and efficient online assessments</p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 md:gap-6">
             {features.map((feature, i) => (
-              <div key={i} className="stat-card group hover:border-primary/30">
-                <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-4 transition-all duration-300 ${colorClasses[feature.color].bg}`}>
-                  <svg 
-                    className={`w-6 h-6 transition-colors ${colorClasses[feature.color].text}`}
-                    fill="none" 
-                    stroke="currentColor" 
+              <div key={i} className="stat-card group hover:border-primary/30 p-4 sm:p-5 md:p-6">
+                <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-lg sm:rounded-xl flex items-center justify-center mb-3 sm:mb-4 transition-all duration-300 ${colorClasses[feature.color].bg}`}>
+                  <svg
+                    className={`w-5 h-5 sm:w-6 sm:h-6 transition-colors ${colorClasses[feature.color].text}`}
+                    fill="none"
+                    stroke="currentColor"
                     viewBox="0 0 24 24"
                   >
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={feature.icon} />
                   </svg>
                 </div>
-                <h3 className="text-xl font-semibold mb-2 text-text-primary">{feature.title}</h3>
-                <p className="text-text-muted">{feature.desc}</p>
+                <h3 className="text-base sm:text-lg md:text-xl font-semibold mb-1.5 sm:mb-2 text-text-primary">{feature.title}</h3>
+                <p className="text-text-muted text-xs sm:text-sm md:text-base">{feature.desc}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      <section className="py-20 px-4 gradient-primary relative overflow-hidden">
+      {/* CTA Section */}
+      <section className="py-12 sm:py-16 md:py-20 px-4 gradient-primary relative overflow-hidden">
         <div className="absolute inset-0">
-          <div className="absolute top-0 left-1/4 w-[300px] h-[300px] bg-white/10 rounded-full blur-[80px]"></div>
-          <div className="absolute bottom-0 right-1/4 w-[200px] h-[200px] bg-white/5 rounded-full blur-[60px]"></div>
+          <div className="absolute top-0 left-1/4 w-[150px] sm:w-[200px] md:w-[300px] h-[150px] sm:h-[200px] md:h-[300px] bg-white/10 rounded-full blur-[50px] sm:blur-[60px] md:blur-[80px]"></div>
+          <div className="absolute bottom-0 right-1/4 w-[100px] sm:w-[150px] md:w-[200px] h-[100px] sm:h-[150px] md:h-[200px] bg-white/5 rounded-full blur-[40px] sm:blur-[50px] md:blur-[60px]"></div>
         </div>
         <div className="max-w-4xl mx-auto text-center relative">
-          <h2 className="text-4xl font-bold mb-4 text-white">Ready to Get Started?</h2>
-          <p className="text-blue-100 text-lg mb-8 max-w-xl mx-auto">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-3 sm:mb-4 text-white">Ready to Get Started?</h2>
+          <p className="text-blue-100 text-sm sm:text-base md:text-lg mb-6 sm:mb-8 max-w-xl mx-auto px-2">
             Join thousands of educators and students who trust AssessHub for their online assessments.
           </p>
-          <Link to="/register" className="inline-flex items-center gap-2 bg-white text-primary px-8 py-4 rounded-lg font-semibold hover:bg-blue-50 transition-all shadow-lg hover:shadow-xl no-underline">
+          <Link to="/register" className="inline-flex items-center gap-2 bg-white text-primary px-6 sm:px-8 py-3 sm:py-4 rounded-lg font-semibold text-sm sm:text-base hover:bg-blue-50 transition-all shadow-lg hover:shadow-xl no-underline">
             Start Free Trial
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
             </svg>
           </Link>
         </div>
       </section>
 
-      <footer className="bg-card border-t border-border py-8 px-4">
-        <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-primary flex items-center justify-center">
-              <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      {/* Footer */}
+      <footer className="bg-card border-t border-border py-6 sm:py-8 px-4">
+        <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-4">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg sm:rounded-xl bg-primary flex items-center justify-center">
+              <svg className="w-4 h-4 sm:w-5 sm:h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
             </div>
-            <span className="font-bold text-text-primary">AssessHub</span>
+            <span className="font-bold text-text-primary text-sm sm:text-base">AssessHub</span>
           </div>
-          <p className="text-text-muted text-sm">© 2025 AssessHub. All rights reserved.</p>
+          <p className="text-text-muted text-xs sm:text-sm">© 2025 AssessHub. All rights reserved.</p>
         </div>
       </footer>
     </div>
