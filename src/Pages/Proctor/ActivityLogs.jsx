@@ -98,7 +98,7 @@ const ActivityLogs = () => {
                         <div className="flex items-center gap-2 mt-2">
                           <span className="text-xs text-text-light">
                             {log.student?.firstName} {log.student?.lastName}
-                          </span>
+                            </span>
                           <span className="text-xs text-text-light">•</span>
                           <span className="text-xs text-text-light">
                             {log.exam?.title}
@@ -106,25 +106,25 @@ const ActivityLogs = () => {
                         </div>
                       </div>
                       <span className="text-xs text-text-light whitespace-nowrap">
-                        {new Date(log.timestamp).toLocaleString()}
-                      </span>
+                          {new Date(log.timestamp).toLocaleString()}
+                </span>
                     </div>
                   </div>
                 </div>
               </div>
             ))}
           </div>
-        ) : (
+          ) : (
           <div className="card text-center py-16">
             <svg className="w-16 h-16 mx-auto mb-4 text-text-light" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
-            </svg>
+              </svg>
             <h3 className="text-xl font-semibold text-text-primary mb-2">No Logs Found</h3>
             <p className="text-sm text-text-muted">
               No activity logs match your current filter
             </p>
-          </div>
-        )}
+            </div>
+          )}
       </div>
     </Layout>
   );

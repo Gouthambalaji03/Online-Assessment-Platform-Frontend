@@ -39,7 +39,7 @@ const FlaggedExams = () => {
       low: 'badge-info',
       medium: 'badge-warning',
       high: 'badge-error'
-    };
+  };
     return colors[severity] || colors.medium;
   };
 
@@ -69,11 +69,11 @@ const FlaggedExams = () => {
                   <div className="flex items-center gap-4">
                     <div className="avatar">
                       {item.student?.firstName?.charAt(0)}
-                    </div>
-                    <div>
+                      </div>
+                      <div>
                       <p className="font-semibold text-text-primary">
                         {item.student?.firstName} {item.student?.lastName}
-                      </p>
+                        </p>
                       <p className="text-sm text-text-muted">{item.exam?.title}</p>
                     </div>
                   </div>

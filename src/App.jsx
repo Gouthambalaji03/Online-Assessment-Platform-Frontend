@@ -168,7 +168,7 @@ const App = () => {
               <LiveSessions />
             </ProtectedRoute>
           } />
-          <Route path="/proctor/flags" element={
+          <Route path="/proctor/flagged" element={
             <ProtectedRoute roles={['proctor', 'admin']}>
               <FlaggedExams />
             </ProtectedRoute>
@@ -177,6 +177,18 @@ const App = () => {
             <ProtectedRoute roles={['proctor', 'admin']}>
               <ActivityLogs />
             </ProtectedRoute>
+          } />
+
+          {/* 404 Catch-all route */}
+          <Route path="*" element={
+            <div className="min-h-screen bg-surface flex items-center justify-center">
+              <div className="text-center">
+                <h1 className="text-6xl font-bold text-primary mb-4">404</h1>
+                <p className="text-xl text-text-primary mb-2">Page Not Found</p>
+                <p className="text-text-muted mb-6">The page you're looking for doesn't exist.</p>
+                <a href="/" className="btn-primary inline-flex no-underline">Go Home</a>
+              </div>
+            </div>
           } />
         </Routes>
 

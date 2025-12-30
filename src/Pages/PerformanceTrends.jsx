@@ -65,7 +65,7 @@ const PerformanceTrends = () => {
               Browse Exams
             </Link>
           </div>
-        </div>
+      </div>
       </Layout>
     );
   }
@@ -213,7 +213,7 @@ const PerformanceTrends = () => {
             </table>
           </div>
         </div>
-      </div>
+    </div>
     </Layout>
   );
 };

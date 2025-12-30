@@ -57,10 +57,10 @@ const PendingGrading = () => {
           <div className="flex items-center gap-3">
             <div className="w-12 h-12 rounded-xl bg-warning-light flex items-center justify-center">
               <svg className="w-6 h-6 text-warning" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-            </div>
-            <div>
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <div>
               <p className="text-2xl font-bold text-text-primary">{results.length}</p>
               <p className="text-sm text-text-muted">Pending Results</p>
             </div>
@@ -91,7 +91,7 @@ const PendingGrading = () => {
                 </tr>
               </thead>
               <tbody>
-                {results.map(result => (
+              {results.map(result => (
                   <tr key={result._id} className="table-row">
                     <td className="py-4 px-5">
                       <p className="font-semibold text-text-primary">{result.student?.firstName} {result.student?.lastName}</p>
@@ -114,14 +114,14 @@ const PendingGrading = () => {
                     </td>
                     <td className="py-4 px-5 text-right">
                       <Link to={`/admin/grading/${result._id}`} className="btn-primary btn-sm no-underline">
-                        Grade
+                      Grade
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                        </svg>
-                      </Link>
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      </svg>
+                    </Link>
                     </td>
                   </tr>
-                ))}
+              ))}
               </tbody>
             </table>
           )}
@@ -146,7 +146,7 @@ const PendingGrading = () => {
             </button>
           </div>
         )}
-      </div>
+    </div>
     </Layout>
   );
 };

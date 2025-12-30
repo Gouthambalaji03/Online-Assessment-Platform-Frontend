@@ -68,10 +68,10 @@ const ProctorAssignment = () => {
       <div className="animate-fade-in max-w-3xl">
         <Link to="/admin/exams" className="inline-flex items-center gap-2 text-text-muted text-sm mb-4 no-underline hover:text-text-primary">
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-          </svg>
-          Back to Exams
-        </Link>
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+            Back to Exams
+          </Link>
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-text-primary mb-2">Assign Proctors</h1>
           <p className="text-sm text-text-muted">Select proctors to monitor "{exam?.title}"</p>
@@ -165,7 +165,7 @@ const ProctorAssignment = () => {
             </button>
           </div>
         </div>
-      </div>
+    </div>
     </Layout>
   );
 };

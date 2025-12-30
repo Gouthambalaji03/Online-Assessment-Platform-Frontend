@@ -29,11 +29,21 @@ const CreateQuestion = () => {
     try {
       const response = await api.get(`/questions/${questionId}`);
       const q = response.data;
+
+      // Transform options from backend format [{optionText, isCorrect}] to simple strings
+      const optionStrings = q.options?.length
+        ? q.options.map(opt => opt.optionText || opt)
+        : ['', '', '', ''];
+
+      // Find the correct answer from options
+      const correctOption = q.options?.find(opt => opt.isCorrect);
+      const correctAnswerText = correctOption?.optionText || q.correctAnswer || '';
+
       setFormData({
         questionText: q.questionText,
         questionType: q.questionType,
-        options: q.options?.length ? q.options : ['', '', '', ''],
-        correctAnswer: q.correctAnswer,
+        options: optionStrings,
+        correctAnswer: correctAnswerText,
         category: q.category || '',
         topic: q.topic || '',
         difficultyLevel: q.difficultyLevel || 'medium',
@@ -54,9 +64,19 @@ const CreateQuestion = () => {
     }
     setLoading(true);
     try {
+      // Transform options array to match backend schema: [{optionText, isCorrect}]
+      const transformedOptions = formData.questionType === 'mcq'
+        ? formData.options
+            .filter(o => o.trim())
+            .map(optionText => ({
+              optionText: optionText,
+              isCorrect: optionText === formData.correctAnswer
+            }))
+        : undefined;
+
       const payload = {
         ...formData,
-        options: formData.questionType === 'mcq' ? formData.options.filter(o => o.trim()) : undefined
+        options: transformedOptions
       };
       if (isEdit) {
         await api.put(`/questions/${questionId}`, payload);

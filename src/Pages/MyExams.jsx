@@ -26,22 +26,40 @@ const MyExams = () => {
 
   const now = new Date();
   const filteredExams = exams.filter(exam => {
+    const isCompleted = exam.completionStatus?.completed;
     const examDate = new Date(exam.scheduledDate);
-    if (filter === 'upcoming') return examDate >= now;
-    if (filter === 'past') return examDate < now;
+
+    if (filter === 'upcoming') {
+      // Show only exams that are NOT completed and date is in future or today
+      return !isCompleted && examDate >= new Date(now.toDateString());
+    }
+    if (filter === 'past') {
+      // Show completed exams OR past date exams
+      return isCompleted || examDate < new Date(now.toDateString());
+    }
     return true;
   });
 
   const getExamStatus = (exam) => {
+    // Check if exam is completed first
+    if (exam.completionStatus?.completed) {
+      const percentage = exam.completionStatus.percentage?.toFixed(0) || 0;
+      const isPassed = exam.completionStatus.isPassed;
+      return {
+        label: isPassed ? `Passed (${percentage}%)` : `Failed (${percentage}%)`,
+        color: isPassed ? 'bg-success-light text-success-dark' : 'bg-error-light text-error-dark'
+      };
+    }
+
     const examDate = new Date(exam.scheduledDate);
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-    
+
     if (examDate.toDateString() === new Date().toDateString()) {
       return { label: 'Today', color: 'bg-warning-light text-warning-dark' };
     }
     if (examDate < today) {
-      return { label: 'Completed', color: 'bg-success-light text-success-dark' };
+      return { label: 'Expired', color: 'bg-error-light text-error-dark' };
     }
     const daysLeft = Math.ceil((examDate - today) / (1000 * 60 * 60 * 24));
     if (daysLeft <= 7) {
@@ -121,9 +139,19 @@ const MyExams = () => {
                     </div>
                   </div>
 
-                  {new Date(exam.scheduledDate) >= now ? (
-                    <Link 
-                      to={`/exam/${exam._id}/start`} 
+                  {exam.completionStatus?.completed ? (
+                    <Link
+                      to="/results"
+                      className="btn-secondary w-full no-underline"
+                    >
+                      View Result
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                      </svg>
+                    </Link>
+                  ) : new Date(exam.scheduledDate) >= new Date(now.toDateString()) ? (
+                    <Link
+                      to={`/exam/${exam._id}/start`}
                       className="btn-primary w-full no-underline"
                     >
                       Start Exam
@@ -132,12 +160,12 @@ const MyExams = () => {
                       </svg>
                     </Link>
                   ) : (
-                    <Link 
-                      to="/results" 
-                      className="btn-secondary w-full no-underline"
+                    <button
+                      disabled
+                      className="btn-secondary w-full opacity-50 cursor-not-allowed"
                     >
-                      View Result
-                    </Link>
+                      Exam Expired
+                    </button>
                   )}
                 </div>
               );

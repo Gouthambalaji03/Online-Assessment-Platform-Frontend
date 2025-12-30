@@ -22,7 +22,7 @@ const CreateExam = () => {
     scheduledDate: '',
     startTime: '09:00',
     endTime: '17:00',
-    isProctored: false,
+    isProctored: true,
     browserLockdown: false,
     tabSwitchDetection: true,
     shuffleQuestions: false,
@@ -106,11 +106,92 @@ const CreateExam = () => {
   };
 
   const tabs = [
-    { id: 'basic', label: 'Basic Info' },
-    { id: 'schedule', label: 'Schedule' },
-    { id: 'questions', label: 'Questions' },
-    { id: 'settings', label: 'Settings' }
+    { id: 'basic', label: 'Basic Info', step: 1 },
+    { id: 'schedule', label: 'Schedule', step: 2 },
+    { id: 'questions', label: 'Questions', step: 3 },
+    { id: 'settings', label: 'Settings', step: 4 }
   ];
+
+  const currentTabIndex = tabs.findIndex(tab => tab.id === activeTab);
+  const isFirstTab = currentTabIndex === 0;
+  const isLastTab = currentTabIndex === tabs.length - 1;
+
+  const validateCurrentTab = () => {
+    if (activeTab === 'basic') {
+      if (!formData.title.trim()) {
+        toast.error('Please enter exam title');
+        return false;
+      }
+      if (!formData.category.trim()) {
+        toast.error('Please enter category');
+        return false;
+      }
+      if (!formData.duration || formData.duration < 1) {
+        toast.error('Duration must be at least 1 minute');
+        return false;
+      }
+      if (!formData.totalMarks || formData.totalMarks < 1) {
+        toast.error('Total marks must be at least 1');
+        return false;
+      }
+      if (formData.passingScore === '' || formData.passingScore < 0 || formData.passingScore > 100) {
+        toast.error('Passing score must be between 0 and 100');
+        return false;
+      }
+    }
+    if (activeTab === 'schedule') {
+      if (!formData.scheduledDate) {
+        toast.error('Please select a scheduled date');
+        return false;
+      }
+    }
+    if (activeTab === 'questions') {
+      if (selectedQuestions.length === 0) {
+        toast.error('Please select at least one question');
+        return false;
+      }
+    }
+    return true;
+  };
+
+  const goToNextTab = (e) => {
+    if (e) e.preventDefault();
+    if (validateCurrentTab()) {
+      const nextIndex = currentTabIndex + 1;
+      if (nextIndex < tabs.length) {
+        setActiveTab(tabs[nextIndex].id);
+      }
+    }
+  };
+
+  const goToPreviousTab = (e) => {
+    if (e) e.preventDefault();
+    const prevIndex = currentTabIndex - 1;
+    if (prevIndex >= 0) {
+      setActiveTab(tabs[prevIndex].id);
+    }
+  };
+
+  const goToTab = (tabId) => {
+    const targetIndex = tabs.findIndex(tab => tab.id === tabId);
+    // Allow going back without validation, but validate when going forward
+    if (targetIndex < currentTabIndex) {
+      setActiveTab(tabId);
+    } else if (targetIndex > currentTabIndex) {
+      // Validate all tabs before the target
+      let canProceed = true;
+      for (let i = currentTabIndex; i < targetIndex; i++) {
+        setActiveTab(tabs[i].id);
+        if (!validateCurrentTab()) {
+          canProceed = false;
+          break;
+        }
+      }
+      if (canProceed) {
+        setActiveTab(tabId);
+      }
+    }
+  };
 
   return (
     <Layout>
@@ -124,21 +205,51 @@ const CreateExam = () => {
           </p>
         </div>
 
-        <div className="tab-group mb-6">
-          {tabs.map((tab) => (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
-              className={`tab-item ${activeTab === tab.id ? 'active' : ''}`}
-            >
-              {tab.label}
-              {tab.id === 'questions' && selectedQuestions.length > 0 && (
-                <span className="ml-2 bg-primary text-white text-xs px-2 py-0.5 rounded-full">
-                  {selectedQuestions.length}
-                </span>
-              )}
-            </button>
-          ))}
+        {/* Step Progress Indicator */}
+        <div className="mb-8">
+          <div className="flex items-center justify-between mb-4">
+            {tabs.map((tab, index) => (
+              <div key={tab.id} className="flex items-center flex-1">
+                <button
+                  type="button"
+                  onClick={() => goToTab(tab.id)}
+                  className={`flex items-center gap-2 ${
+                    index <= currentTabIndex ? 'cursor-pointer' : 'cursor-not-allowed opacity-60'
+                  }`}
+                >
+                  <div className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold text-sm transition-all ${
+                    activeTab === tab.id
+                      ? 'bg-primary text-white shadow-lg shadow-primary/30'
+                      : index < currentTabIndex
+                      ? 'bg-success text-white'
+                      : 'bg-surface-secondary text-text-muted'
+                  }`}>
+                    {index < currentTabIndex ? (
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      </svg>
+                    ) : (
+                      tab.step
+                    )}
+                  </div>
+                  <span className={`hidden sm:block text-sm font-medium ${
+                    activeTab === tab.id ? 'text-primary' : 'text-text-muted'
+                  }`}>
+                    {tab.label}
+                  </span>
+                </button>
+                {index < tabs.length - 1 && (
+                  <div className={`flex-1 h-1 mx-3 rounded-full transition-colors ${
+                    index < currentTabIndex ? 'bg-success' : 'bg-surface-secondary'
+                  }`} />
+                )}
+              </div>
+            ))}
+          </div>
+          {/* Mobile tab label */}
+          <p className="sm:hidden text-center text-sm font-medium text-text-primary">
+            Step {currentTabIndex + 1}: {tabs[currentTabIndex].label}
+          </p>
         </div>
 
         <form onSubmit={handleSubmit}>
@@ -153,7 +264,6 @@ const CreateExam = () => {
                     onChange={(e) => setFormData({ ...formData, title: e.target.value })}
                     placeholder="e.g., Introduction to Programming"
                     className="input"
-                    required
                   />
                 </div>
                 <div className="form-group">
@@ -196,10 +306,9 @@ const CreateExam = () => {
                     <input
                       type="number"
                       value={formData.duration}
-                      onChange={(e) => setFormData({ ...formData, duration: parseInt(e.target.value) })}
+                      onChange={(e) => setFormData({ ...formData, duration: e.target.value === '' ? '' : parseInt(e.target.value) || 0 })}
                       className="input"
                       min="1"
-                      required
                     />
                   </div>
                   <div className="form-group">
@@ -207,10 +316,9 @@ const CreateExam = () => {
                     <input
                       type="number"
                       value={formData.totalMarks}
-                      onChange={(e) => setFormData({ ...formData, totalMarks: parseInt(e.target.value) })}
+                      onChange={(e) => setFormData({ ...formData, totalMarks: e.target.value === '' ? '' : parseInt(e.target.value) || 0 })}
                       className="input"
                       min="1"
-                      required
                     />
                   </div>
                   <div className="form-group">
@@ -218,11 +326,10 @@ const CreateExam = () => {
                     <input
                       type="number"
                       value={formData.passingScore}
-                      onChange={(e) => setFormData({ ...formData, passingScore: parseInt(e.target.value) })}
+                      onChange={(e) => setFormData({ ...formData, passingScore: e.target.value === '' ? '' : parseInt(e.target.value) || 0 })}
                       className="input"
                       min="0"
                       max="100"
-                      required
                     />
                   </div>
                 </div>
@@ -232,7 +339,7 @@ const CreateExam = () => {
 
           {activeTab === 'schedule' && (
             <div className="card">
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div className="flex flex-col gap-5">
                 <div className="form-group">
                   <label className="label">Scheduled Date</label>
                   <input
@@ -240,27 +347,73 @@ const CreateExam = () => {
                     value={formData.scheduledDate}
                     onChange={(e) => setFormData({ ...formData, scheduledDate: e.target.value })}
                     className="input"
-                    required
                   />
                 </div>
-                <div className="form-group">
-                  <label className="label">Start Time</label>
-                  <input
-                    type="time"
-                    value={formData.startTime}
-                    onChange={(e) => setFormData({ ...formData, startTime: e.target.value })}
-                    className="input"
-                  />
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="form-group">
+                    <label className="label">Start Time</label>
+                    <div className="flex gap-2 items-center">
+                      <select
+                        value={formData.startTime.split(':')[0]}
+                        onChange={(e) => {
+                          const minutes = formData.startTime.split(':')[1] || '00';
+                          setFormData({ ...formData, startTime: `${e.target.value}:${minutes}` });
+                        }}
+                        className="select flex-1"
+                      >
+                        {Array.from({ length: 24 }, (_, i) => i.toString().padStart(2, '0')).map(hour => (
+                          <option key={hour} value={hour}>{hour}</option>
+                        ))}
+                      </select>
+                      <span className="text-text-primary font-bold text-lg">:</span>
+                      <select
+                        value={formData.startTime.split(':')[1] || '00'}
+                        onChange={(e) => {
+                          const hours = formData.startTime.split(':')[0] || '09';
+                          setFormData({ ...formData, startTime: `${hours}:${e.target.value}` });
+                        }}
+                        className="select flex-1"
+                      >
+                        {['00', '15', '30', '45'].map(minute => (
+                          <option key={minute} value={minute}>{minute}</option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+                  <div className="form-group">
+                    <label className="label">End Time</label>
+                    <div className="flex gap-2 items-center">
+                      <select
+                        value={formData.endTime.split(':')[0]}
+                        onChange={(e) => {
+                          const minutes = formData.endTime.split(':')[1] || '00';
+                          setFormData({ ...formData, endTime: `${e.target.value}:${minutes}` });
+                        }}
+                        className="select flex-1"
+                      >
+                        {Array.from({ length: 24 }, (_, i) => i.toString().padStart(2, '0')).map(hour => (
+                          <option key={hour} value={hour}>{hour}</option>
+                        ))}
+                      </select>
+                      <span className="text-text-primary font-bold text-lg">:</span>
+                      <select
+                        value={formData.endTime.split(':')[1] || '00'}
+                        onChange={(e) => {
+                          const hours = formData.endTime.split(':')[0] || '17';
+                          setFormData({ ...formData, endTime: `${hours}:${e.target.value}` });
+                        }}
+                        className="select flex-1"
+                      >
+                        {['00', '15', '30', '45'].map(minute => (
+                          <option key={minute} value={minute}>{minute}</option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
                 </div>
-                <div className="form-group">
-                  <label className="label">End Time</label>
-                  <input
-                    type="time"
-                    value={formData.endTime}
-                    onChange={(e) => setFormData({ ...formData, endTime: e.target.value })}
-                    className="input"
-                  />
-                </div>
+                <p className="text-xs text-text-muted">
+                  Time is in 24-hour format. Students can take the exam between start and end time on the scheduled date.
+                </p>
               </div>
             </div>
           )}
@@ -329,24 +482,61 @@ const CreateExam = () => {
             </div>
           )}
 
-          <div className="flex justify-end gap-3 mt-6">
+          <div className="flex justify-between items-center mt-6">
             <button
               type="button"
               onClick={() => navigate('/admin/exams')}
-              className="btn-secondary"
+              className="btn-ghost text-text-muted hover:text-text-primary"
             >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
               Cancel
             </button>
-            <button type="submit" disabled={loading} className="btn-primary">
-              {loading ? (
-                <>
-                  <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                  Saving...
-                </>
-              ) : (
-                isEdit ? 'Update Exam' : 'Create Exam'
+
+            <div className="flex gap-3">
+              {!isFirstTab && (
+                <button
+                  type="button"
+                  onClick={(e) => goToPreviousTab(e)}
+                  className="btn-secondary"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                  </svg>
+                  Previous
+                </button>
               )}
-            </button>
+
+              {isLastTab ? (
+                <button type="submit" disabled={loading} className="btn-primary">
+                  {loading ? (
+                    <>
+                      <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                      Saving...
+                    </>
+                  ) : (
+                    <>
+                      {isEdit ? 'Update Exam' : 'Create Exam'}
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                      </svg>
+                    </>
+                  )}
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  onClick={(e) => goToNextTab(e)}
+                  className="btn-primary"
+                >
+                  Next
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </button>
+              )}
+            </div>
           </div>
         </form>
       </div>

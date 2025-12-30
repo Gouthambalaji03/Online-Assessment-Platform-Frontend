@@ -82,10 +82,10 @@ const ManualGrading = () => {
       <div className="animate-fade-in">
         <Link to="/admin/grading" className="inline-flex items-center gap-2 text-text-muted text-sm mb-4 no-underline hover:text-text-primary">
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-          </svg>
-          Back to Pending Grading
-        </Link>
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+            Back to Pending Grading
+          </Link>
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-text-primary mb-2">Manual Grading</h1>
           <p className="text-sm text-text-muted">
@@ -95,27 +95,27 @@ const ManualGrading = () => {
 
         <div className="card mb-6">
           <div className="flex flex-wrap gap-6">
-            <div>
+          <div>
               <span className="text-xs text-text-muted block">Student</span>
               <span className="font-semibold text-text-primary">{result?.student?.firstName} {result?.student?.lastName}</span>
-            </div>
-            <div>
+          </div>
+          <div>
               <span className="text-xs text-text-muted block">Email</span>
               <span className="font-semibold text-text-primary">{result?.student?.email}</span>
-            </div>
-            <div>
+          </div>
+          <div>
               <span className="text-xs text-text-muted block">Exam</span>
               <span className="font-semibold text-text-primary">{result?.exam?.title}</span>
-            </div>
-            <div>
+          </div>
+          <div>
               <span className="text-xs text-text-muted block">Current Score</span>
               <span className="font-semibold text-text-primary">{result?.obtainedMarks}/{result?.totalMarks} ({Number(result?.percentage || 0).toFixed(1)}%)</span>
-            </div>
-            <div>
+          </div>
+          <div>
               <span className="text-xs text-text-muted block">Status</span>
               <span className={`badge ${result?.status === 'evaluated' ? 'badge-success' : 'badge-warning'}`}>
-                {result?.status}
-              </span>
+              {result?.status}
+            </span>
             </div>
           </div>
         </div>
@@ -218,7 +218,7 @@ const ManualGrading = () => {
             {saving ? 'Saving...' : 'Save Grades'}
           </button>
         </div>
-      </div>
+    </div>
     </Layout>
   );
 };

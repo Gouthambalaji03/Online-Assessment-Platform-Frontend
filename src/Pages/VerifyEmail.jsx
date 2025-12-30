@@ -9,7 +9,7 @@ const VerifyEmail = () => {
   const [message, setMessage] = useState('');
 
   useEffect(() => {
-    verifyEmail();
+      verifyEmail();
   }, [token]);
 
   const verifyEmail = async () => {
