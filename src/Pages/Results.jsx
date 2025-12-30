@@ -88,7 +88,7 @@ const Results = () => {
                           <div className="flex items-start justify-between gap-4">
                             <div className="flex-1">
                               <p className="text-text-primary font-medium mb-2">
-                                {idx + 1}. {answer.question?.questionText}
+                                {idx + 1}. {answer.question?.questionText || 'Question not available'}
                               </p>
                               <div className="flex flex-col gap-1 text-sm">
                                 <p className="text-text-secondary">
@@ -97,12 +97,12 @@ const Results = () => {
                                 </p>
                                 <p className="text-text-secondary">
                                   <span className="font-medium">Correct Answer:</span>{' '}
-                                  {answer.question?.correctAnswer}
+                                  {answer.correctAnswer || 'N/A'}
                                 </p>
                               </div>
                               {answer.question?.explanation && (
                                 <p className="text-sm text-text-muted mt-2 italic">
-                                  {answer.question.explanation}
+                                  <span className="font-medium">Explanation:</span> {answer.question.explanation}
                                 </p>
                               )}
                             </div>

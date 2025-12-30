@@ -136,6 +136,9 @@ const TakeExam = () => {
     if (submitting) return;
     setSubmitting(true);
 
+    // Stop the camera before submitting
+    setShowVideoProctor(false);
+
     try {
       const formattedAnswers = Object.entries(answers).map(([questionId, selectedOption]) => ({
         questionId,
@@ -143,7 +146,7 @@ const TakeExam = () => {
       }));
 
       const response = await api.post(`/exams/submit/${resultId}`, { answers: formattedAnswers });
-      
+
       if (exam?.isProctored) {
         await logProctoringEvent('exam_submitted', 'Exam submitted successfully');
       }
@@ -153,6 +156,10 @@ const TakeExam = () => {
     } catch (error) {
       toast.error('Failed to submit exam');
       setSubmitting(false);
+      // Re-enable camera if submission failed and exam is proctored
+      if (exam?.isProctored && exam?.proctoringSettings?.videoMonitoring) {
+        setShowVideoProctor(true);
+      }
     }
   };
 

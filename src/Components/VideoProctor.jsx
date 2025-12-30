@@ -1,25 +1,42 @@
 import { useState, useEffect, useRef } from 'react';
 import api from '../Services/api';
 
-const VideoProctor = ({ examId }) => {
+const VideoProctor = ({ examId, isActive = true }) => {
   const videoRef = useRef(null);
+  const streamRef = useRef(null);
+  const intervalRef = useRef(null);
   const [cameraStatus, setCameraStatus] = useState('initializing');
   const [violations, setViolations] = useState(0);
 
   useEffect(() => {
-    initializeCamera();
-    const intervalId = setInterval(captureSnapshot, 30000);
+    if (isActive) {
+      initializeCamera();
+      intervalRef.current = setInterval(captureSnapshot, 30000);
+    }
     return () => {
-      clearInterval(intervalId);
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+      }
       stopCamera();
     };
   }, []);
 
+  // Stop camera when isActive becomes false
+  useEffect(() => {
+    if (!isActive) {
+      stopCamera();
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+      }
+    }
+  }, [isActive]);
+
   const initializeCamera = async () => {
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ 
-        video: { facingMode: 'user', width: 320, height: 240 } 
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: 'user', width: 320, height: 240 }
       });
+      streamRef.current = stream;
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
       }
@@ -31,9 +48,14 @@ const VideoProctor = ({ examId }) => {
   };
 
   const stopCamera = () => {
-    if (videoRef.current?.srcObject) {
-      videoRef.current.srcObject.getTracks().forEach(track => track.stop());
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach(track => track.stop());
+      streamRef.current = null;
     }
+    if (videoRef.current?.srcObject) {
+      videoRef.current.srcObject = null;
+    }
+    setCameraStatus('stopped');
   };
 
   const captureSnapshot = async () => {
