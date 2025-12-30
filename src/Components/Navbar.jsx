@@ -26,18 +26,6 @@ const Navbar = () => {
             <span className="text-xl font-bold text-text-primary">AssessHub</span>
           </Link>
 
-          <div className="hidden md:flex items-center gap-6">
-            <a href="#features" className="text-sm text-text-muted hover:text-text-primary transition-colors no-underline">
-              Features
-            </a>
-            <a href="#pricing" className="text-sm text-text-muted hover:text-text-primary transition-colors no-underline">
-              Pricing
-            </a>
-            <a href="#about" className="text-sm text-text-muted hover:text-text-primary transition-colors no-underline">
-              About
-            </a>
-          </div>
-
           <div className="hidden md:flex items-center gap-3">
             {user ? (
               <Link to={getDashboardLink()} className="btn-primary text-sm no-underline">
@@ -74,16 +62,6 @@ const Navbar = () => {
         {mobileMenuOpen && (
           <div className="md:hidden py-4 border-t border-border">
             <div className="flex flex-col gap-2">
-              <a href="#features" className="py-2 px-4 text-text-muted hover:text-text-primary hover:bg-surface-secondary rounded-lg transition-colors no-underline">
-                Features
-              </a>
-              <a href="#pricing" className="py-2 px-4 text-text-muted hover:text-text-primary hover:bg-surface-secondary rounded-lg transition-colors no-underline">
-                Pricing
-              </a>
-              <a href="#about" className="py-2 px-4 text-text-muted hover:text-text-primary hover:bg-surface-secondary rounded-lg transition-colors no-underline">
-                About
-              </a>
-              <div className="border-t border-border my-2"></div>
               {user ? (
                 <Link to={getDashboardLink()} className="btn-primary text-center no-underline">
                   Dashboard
