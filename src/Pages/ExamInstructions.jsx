@@ -57,12 +57,8 @@ const ExamInstructions = () => {
       return;
     }
 
-    try {
-      await api.post(`/exams/${examId}/start`);
-      navigate(`/exam/${examId}`);
-    } catch (error) {
-      toast.error(error.response?.data?.message || 'Failed to start exam');
-    }
+    // Navigate to the take exam page - the exam will be started there
+    navigate(`/exam/${examId}/take`);
   };
 
   const allChecksPassed = Object.values(checks).every(Boolean) || !exam?.isProctored;
